@@ -3,8 +3,8 @@
   "name": "admin_metrics_be",
   "type": "function",
   "source": {
-    "https": null,
-    "ssh": null,
+    "https": "https://github.com/frederic-neo/admin_dash.git",
+    "ssh": "git@github.com:frederic-neo/admin_dash.git",
     "branch": "block_admin_metrics_be"
   },
   "parentBlockIDs": [
