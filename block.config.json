@@ -1,0 +1,21 @@
+{
+  "name": "admin_dash",
+  "type": "package",
+  "blockId": "sFwOS1scU3FbesfqurFKa",
+  "source": {
+    "https": "https://github.com/frederic-neo/admin_dash.git",
+    "ssh": "git@github.com:frederic-neo/admin_dash.git",
+    "branch": "block_admin_dash"
+  },
+  "parentBlockIDs": [],
+  "isPublic": false,
+  "supportedAppblockVersions": [
+    "1.0.0"
+  ],
+  "repoType": "mono",
+  "dependencies": {
+    "admin_metrics_be": {
+      "directory": "admin_metrics_be"
+    }
+  }
+}
