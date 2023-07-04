@@ -1,5 +1,3 @@
-import { shared, env } from '@appblocks/node-sdk'
-
 const handler = async (event) => {
   const { req, res } = event
 
@@ -12,8 +10,7 @@ const handler = async (event) => {
 
   // Add your code here
 
-  console.log(req.body)
-  res.write(JSON.stringify({ success: true, msg: `Happy Hacking24` }))
+  res.write(JSON.stringify({ success: true, msg: `Happy Hacking23`, request: requestBody }))
   res.end()
 }
 
