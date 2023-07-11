@@ -1,0 +1,20 @@
+{
+  "blockId": "xdW4LeB1gL8HSlnqCHI7e",
+  "name": "admin_be_blocksPushedToStoreList",
+  "type": "function",
+  "source": {
+    "https": "https://github.com/frederic-neo/admin_dash.git",
+    "ssh": "git@github.com:frederic-neo/admin_dash.git",
+    "branch": "block_admin_be_blocksPushedToStoreList"
+  },
+  "parentBlockIDs": [
+    "sFwOS1scU3FbesfqurFKa"
+  ],
+  "repoType": "mono",
+  "language": "nodejs",
+  "supportedAppblockVersions": [
+    "1.0.0"
+  ],
+  "isPublic": false,
+  "start": "node index.js"
+}
