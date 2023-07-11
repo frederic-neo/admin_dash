@@ -22,10 +22,10 @@ const admin_be_newsLettersAddedList = async ({ req, res }) => {
     const requestBody = await getBody(req)
     const { start_date, end_date, name_filter, status } = requestBody
 
-    const newsLettersAddedQuery = `select * from getDailyNewsLettersAdded('${start_date}', '${end_date}','${name_filter}')`
-    const newsLettersAdded = await prisma.$queryRawUnsafe(newsLettersAddedQuery)
-    const replacer = (key, value) => (typeof value === 'bigint' ? value.toString() : value)
-    const newsLettersAddedFormatted = JSON.stringify(newsLettersAdded, replacer)
+    // const newsLettersAddedQuery = `select * from getDailyNewsLettersAdded('${start_date}', '${end_date}','${name_filter}')`
+    // const newsLettersAdded = await prisma.$queryRawUnsafe(newsLettersAddedQuery)
+    // const replacer = (key, value) => (typeof value === 'bigint' ? value.toString() : value)
+    // const newsLettersAddedFormatted = JSON.stringify(newsLettersAdded, replacer)
 
     const records = await prisma.leads.findMany({
       where: {
