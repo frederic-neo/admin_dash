@@ -1,0 +1,19 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("BB_ADMIN_DASH_DATABASE_URL")
+}
+
+model leads {
+  id         String   @id @db.Uuid
+  email      String?  @unique @db.VarChar(255)
+  status     Int?
+  created_at DateTime @db.Timestamptz(6)
+  updated_at DateTime @db.Timestamptz(6)
+}

@@ -1,5 +1,5 @@
 {
-    "name": "admin_metrics_be",
+    "name": "admin_be_blocksCreatedList",
     "version": "0.0.1",
     "description": "",
     "main": "index.js",

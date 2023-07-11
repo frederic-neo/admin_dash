@@ -1,0 +1,20 @@
+{
+  "blockId": "H-AgPQ2khvgJjSJb7mjph",
+  "name": "admin_be_userSignupsList",
+  "type": "function",
+  "source": {
+    "https": "https://github.com/frederic-neo/admin_dash.git",
+    "ssh": "git@github.com:frederic-neo/admin_dash.git",
+    "branch": "block_admin_be_userSignupsList"
+  },
+  "parentBlockIDs": [
+    "sFwOS1scU3FbesfqurFKa"
+  ],
+  "repoType": "mono",
+  "language": "nodejs",
+  "supportedAppblockVersions": [
+    "1.0.0"
+  ],
+  "isPublic": false,
+  "start": "node index.js"
+}

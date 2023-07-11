@@ -1,0 +1,21 @@
+{
+  "blockId": "GWG_uL75cE71QMOztlOI6",
+  "name": "admin_fe_container",
+  "type": "ui-container",
+  "source": {
+    "https": "https://github.com/frederic-neo/admin_dash.git",
+    "ssh": "git@github.com:frederic-neo/admin_dash.git",
+    "branch": "block_admin_fe_container"
+  },
+  "parentBlockIDs": [
+    "sFwOS1scU3FbesfqurFKa"
+  ],
+  "repoType": "mono",
+  "language": "js",
+  "supportedAppblockVersions": [
+    "1.0.0"
+  ],
+  "isPublic": false,
+  "start": "npx webpack-dev-server",
+  "build": "npx webpack"
+}

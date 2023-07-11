@@ -1,0 +1,20 @@
+{
+  "blockId": "rfG7qjvu0LBQJCiy_HY-y",
+  "name": "admin_be_spacesCreatedList",
+  "type": "function",
+  "source": {
+    "https": "https://github.com/frederic-neo/admin_dash.git",
+    "ssh": "git@github.com:frederic-neo/admin_dash.git",
+    "branch": "block_admin_be_spacesCreatedList"
+  },
+  "parentBlockIDs": [
+    "sFwOS1scU3FbesfqurFKa"
+  ],
+  "repoType": "mono",
+  "language": "nodejs",
+  "supportedAppblockVersions": [
+    "1.0.0"
+  ],
+  "isPublic": false,
+  "start": "node index.js"
+}

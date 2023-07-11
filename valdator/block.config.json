@@ -1,11 +1,11 @@
 {
-  "blockId": "of-1hMaTtoRfh0QRcp9qA",
-  "name": "admin_metrics_be",
+  "blockId": "HncmRH8iiI05PPerj6lmj",
+  "name": "valdator",
   "type": "function",
   "source": {
     "https": "https://github.com/frederic-neo/admin_dash.git",
     "ssh": "git@github.com:frederic-neo/admin_dash.git",
-    "branch": "block_admin_metrics_be"
+    "branch": "block_valdator"
   },
   "parentBlockIDs": [
     "sFwOS1scU3FbesfqurFKa"

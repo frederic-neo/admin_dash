@@ -1,0 +1,2002 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("BB_ADMIN_DASH_DATABASE_URL")
+}
+
+model ac_act_grps {
+  id             String           @id
+  created_at     DateTime?        @db.Timestamptz(6)
+  updated_at     DateTime?        @db.Timestamptz(6)
+  deleted_at     DateTime?        @db.Timestamptz(6)
+  owner_space_id String?
+  description    String?
+  name           String?
+  is_predefined  Boolean?
+  opt_counter    Int?             @db.SmallInt
+  type           BigInt?
+  spaces         spaces?          @relation(fields: [owner_space_id], references: [space_id], onDelete: NoAction, onUpdate: NoAction, map: "fk_ac_act_grps_owner_space")
+  ac_policies    ac_policies[]
+  act_gp_actions act_gp_actions[]
+
+  @@index([deleted_at], map: "idx_ac_act_grps_deleted_at")
+}
+
+model ac_actions {
+  id             String           @id
+  created_at     DateTime?        @db.Timestamptz(6)
+  updated_at     DateTime?        @db.Timestamptz(6)
+  deleted_at     DateTime?        @db.Timestamptz(6)
+  name           String?
+  description    String?
+  opt_counter    Int?             @db.SmallInt
+  owner_app_id   String?          @db.VarChar(255)
+  shield_apps    shield_apps?     @relation(fields: [owner_app_id], references: [app_id], onDelete: NoAction, onUpdate: NoAction, map: "fk_ac_actions_owner_app")
+  ac_res_actions ac_res_actions[]
+  act_gp_actions act_gp_actions[]
+
+  @@index([deleted_at], map: "idx_ac_actions_deleted_at")
+}
+
+model ac_permissions {
+  id              String            @id
+  created_at      DateTime?         @db.Timestamptz(6)
+  updated_at      DateTime?         @db.Timestamptz(6)
+  deleted_at      DateTime?         @db.Timestamptz(6)
+  description     String            @db.VarChar(255)
+  name            String?
+  opt_counter     Int?              @db.SmallInt
+  is_predefined   Boolean?
+  type            BigInt?
+  display_name    String?
+  ac_pol_grp_subs ac_pol_grp_subs[]
+  per_pol_grps    per_pol_grps[]
+
+  @@index([deleted_at], map: "idx_ac_permissions_deleted_at")
+}
+
+model ac_pol_grp_subs {
+  id                           String                         @id
+  created_at                   DateTime?                      @db.Timestamptz(6)
+  updated_at                   DateTime?                      @db.Timestamptz(6)
+  deleted_at                   DateTime?                      @db.Timestamptz(6)
+  owner_space_id               String?
+  role_id                      String?
+  owner_team_id                String?
+  owner_user_id                String?                        @db.VarChar(255)
+  ac_pol_grp_id                String?
+  opt_counter                  Int?                           @db.SmallInt
+  permission_id                String?
+  ac_permissions               ac_permissions?                @relation(fields: [permission_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_ac_pol_grp_subs_ac_permission")
+  ac_pol_grps                  ac_pol_grps?                   @relation(fields: [ac_pol_grp_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_ac_pol_grp_subs_ac_pol_grp")
+  roles                        roles?                         @relation(fields: [role_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_ac_pol_grp_subs_owner_role")
+  spaces                       spaces?                        @relation(fields: [owner_space_id], references: [space_id], onDelete: NoAction, onUpdate: NoAction, map: "fk_ac_pol_grp_subs_owner_space")
+  teams                        teams?                         @relation(fields: [owner_team_id], references: [team_id], onDelete: NoAction, onUpdate: NoAction, map: "fk_ac_pol_grp_subs_owner_team")
+  users                        users?                         @relation(fields: [owner_user_id], references: [user_id], onDelete: NoAction, onUpdate: NoAction, map: "fk_ac_pol_grp_subs_owner_user")
+  pol_grp_subs_entity_mappings pol_grp_subs_entity_mappings[]
+
+  @@index([deleted_at], map: "idx_ac_pol_grp_subs_deleted_at")
+}
+
+model ac_pol_grps {
+  id                      String                    @id
+  created_at              DateTime?                 @db.Timestamptz(6)
+  updated_at              DateTime?                 @db.Timestamptz(6)
+  deleted_at              DateTime?                 @db.Timestamptz(6)
+  owner_space_id          String?
+  description             String                    @db.VarChar(255)
+  name                    String?
+  opt_counter             Int?                      @db.SmallInt
+  is_predefined           Boolean?
+  type                    BigInt?
+  entity_type             BigInt?
+  display_name            String?
+  entity_types            Int[]
+  ac_pol_grp_subs         ac_pol_grp_subs[]
+  spaces                  spaces?                   @relation(fields: [owner_space_id], references: [space_id], onDelete: NoAction, onUpdate: NoAction, map: "fk_ac_pol_grps_owner_space")
+  per_pol_grps            per_pol_grps[]
+  pol_gp_policies         pol_gp_policies[]
+  pol_grp_entity_mappings pol_grp_entity_mappings[]
+
+  @@index([deleted_at], map: "idx_ac_pol_grps_deleted_at")
+}
+
+model ac_policies {
+  id                                  String            @id
+  created_at                          DateTime?         @db.Timestamptz(6)
+  updated_at                          DateTime?         @db.Timestamptz(6)
+  deleted_at                          DateTime?         @db.Timestamptz(6)
+  ac_act_grp_id                       String?
+  ac_res_grp_id                       String?
+  owner_space_id                      String?
+  created_by                          String?           @db.VarChar(255)
+  updated_by                          String?           @db.VarChar(255)
+  name                                String?
+  description                         String?
+  path                                String?
+  opt_counter                         Int?              @db.SmallInt
+  is_predefined                       Boolean?
+  type                                BigInt?
+  ac_act_grps                         ac_act_grps?      @relation(fields: [ac_act_grp_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_ac_policies_ac_action_group")
+  ac_res_grps                         ac_res_grps?      @relation(fields: [ac_res_grp_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_ac_policies_ac_resource_group")
+  users_ac_policies_created_byTousers users?            @relation("ac_policies_created_byTousers", fields: [created_by], references: [user_id], onDelete: NoAction, onUpdate: NoAction, map: "fk_ac_policies_created_user")
+  spaces                              spaces?           @relation(fields: [owner_space_id], references: [space_id], onDelete: NoAction, onUpdate: NoAction, map: "fk_ac_policies_owner_space")
+  users_ac_policies_updated_byTousers users?            @relation("ac_policies_updated_byTousers", fields: [updated_by], references: [user_id], onDelete: NoAction, onUpdate: NoAction, map: "fk_ac_policies_updated_user")
+  pol_gp_policies                     pol_gp_policies[]
+
+  @@index([deleted_at], map: "idx_ac_policies_deleted_at")
+}
+
+model ac_res_actions {
+  id             String        @id
+  created_at     DateTime?     @db.Timestamptz(6)
+  updated_at     DateTime?     @db.Timestamptz(6)
+  deleted_at     DateTime?     @db.Timestamptz(6)
+  ac_action_id   String?
+  ac_resource_id String?
+  opt_counter    Int?          @db.SmallInt
+  ac_actions     ac_actions?   @relation(fields: [ac_action_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_ac_res_actions_ac_action")
+  ac_resources   ac_resources? @relation(fields: [ac_resource_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_ac_res_actions_ac_resource")
+
+  @@index([deleted_at], map: "idx_ac_res_actions_deleted_at")
+}
+
+model ac_res_gp_res {
+  id             String        @id
+  created_at     DateTime?     @db.Timestamptz(6)
+  updated_at     DateTime?     @db.Timestamptz(6)
+  deleted_at     DateTime?     @db.Timestamptz(6)
+  ac_res_grp_id  String?
+  ac_resource_id String?
+  opt_counter    Int?          @db.SmallInt
+  ac_res_grps    ac_res_grps?  @relation(fields: [ac_res_grp_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_ac_res_gp_res_ac_res_grp")
+  ac_resources   ac_resources? @relation(fields: [ac_resource_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_ac_res_gp_res_ac_resource")
+
+  @@index([deleted_at], map: "idx_ac_res_gp_res_deleted_at")
+}
+
+model ac_res_grps {
+  id             String          @id
+  created_at     DateTime?       @db.Timestamptz(6)
+  updated_at     DateTime?       @db.Timestamptz(6)
+  deleted_at     DateTime?       @db.Timestamptz(6)
+  owner_space_id String?
+  name           String?
+  description    String?
+  is_predefined  Boolean?
+  opt_counter    Int?            @db.SmallInt
+  type           BigInt?
+  ac_policies    ac_policies[]
+  ac_res_gp_res  ac_res_gp_res[]
+  spaces         spaces?         @relation(fields: [owner_space_id], references: [space_id], onDelete: NoAction, onUpdate: NoAction, map: "fk_ac_res_grps_owner_space")
+
+  @@index([deleted_at], map: "idx_ac_res_grps_deleted_at")
+}
+
+model ac_resources {
+  id               String           @id
+  created_at       DateTime?        @db.Timestamptz(6)
+  updated_at       DateTime?        @db.Timestamptz(6)
+  deleted_at       DateTime?        @db.Timestamptz(6)
+  name             String?
+  description      String?
+  path             String?
+  function_name    String?
+  entity_name      String?
+  function_method  String?
+  version          String?
+  opt_counter      Int?             @db.SmallInt
+  owner_app_id     String?          @db.VarChar(255)
+  is_authorised    BigInt?
+  is_authenticated BigInt?
+  ac_res_actions   ac_res_actions[]
+  ac_res_gp_res    ac_res_gp_res[]
+  shield_apps      shield_apps?     @relation(fields: [owner_app_id], references: [app_id], onDelete: NoAction, onUpdate: NoAction, map: "fk_ac_resources_owner_app")
+
+  @@index([deleted_at], map: "idx_ac_resources_deleted_at")
+}
+
+model act_gp_actions {
+  id            String       @id
+  created_at    DateTime?    @db.Timestamptz(6)
+  updated_at    DateTime?    @db.Timestamptz(6)
+  deleted_at    DateTime?    @db.Timestamptz(6)
+  ac_act_grp_id String?
+  ac_action_id  String?
+  opt_counter   Int?         @db.SmallInt
+  ac_act_grps   ac_act_grps? @relation(fields: [ac_act_grp_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_act_gp_actions_ac_act_grp")
+  ac_actions    ac_actions?  @relation(fields: [ac_action_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_act_gp_actions_ac_action")
+
+  @@index([deleted_at], map: "idx_act_gp_actions_deleted_at")
+}
+
+model app_categories {
+  id                                                                           String                     @id
+  created_at                                                                   DateTime?                  @db.Timestamptz(6)
+  updated_at                                                                   DateTime?                  @db.Timestamptz(6)
+  deleted_at                                                                   DateTime?                  @db.Timestamptz(6)
+  category_name                                                                String?
+  description                                                                  String?
+  app_category_hierarchies_app_category_hierarchies_ancestorToapp_categories   app_category_hierarchies[] @relation("app_category_hierarchies_ancestorToapp_categories")
+  app_category_hierarchies_app_category_hierarchies_descendantToapp_categories app_category_hierarchies[] @relation("app_category_hierarchies_descendantToapp_categories")
+  app_category_mappings                                                        app_category_mappings[]
+
+  @@index([deleted_at], map: "idx_app_categories_deleted_at")
+}
+
+model app_category_hierarchies {
+  id                                                                 String          @id
+  created_at                                                         DateTime?       @db.Timestamptz(6)
+  updated_at                                                         DateTime?       @db.Timestamptz(6)
+  deleted_at                                                         DateTime?       @db.Timestamptz(6)
+  ancestor                                                           String?
+  descendant                                                         String?
+  num_level                                                          BigInt?
+  app_categories_app_category_hierarchies_ancestorToapp_categories   app_categories? @relation("app_category_hierarchies_ancestorToapp_categories", fields: [ancestor], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_app_category_hierarchies_ancestor_category")
+  app_categories_app_category_hierarchies_descendantToapp_categories app_categories? @relation("app_category_hierarchies_descendantToapp_categories", fields: [descendant], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_app_category_hierarchies_descendant_category")
+
+  @@index([deleted_at], map: "idx_app_category_hierarchies_deleted_at")
+}
+
+model app_category_mappings {
+  id             String          @id
+  created_at     DateTime?       @db.Timestamptz(6)
+  updated_at     DateTime?       @db.Timestamptz(6)
+  deleted_at     DateTime?       @db.Timestamptz(6)
+  category_id    String?
+  app_id         String?
+  app_categories app_categories? @relation(fields: [category_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_app_category_mappings_app_category")
+  apps           apps?           @relation(fields: [app_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_app_category_mappings_app_id")
+
+  @@index([deleted_at], map: "idx_app_category_mappings_deleted_at")
+}
+
+model app_permissions {
+  app_id        String      @db.VarChar(255)
+  permission_id String      @db.VarChar(255)
+  mandatory     Boolean?
+  created_at    DateTime?   @db.Timestamptz(6)
+  updated_at    DateTime?   @db.Timestamptz(6)
+  shield_apps   shield_apps @relation(fields: [app_id], references: [app_id], onDelete: NoAction, onUpdate: NoAction, map: "fk_app_permissions_app_id")
+  permissions   permissions @relation(fields: [permission_id], references: [permission_id], onDelete: NoAction, onUpdate: NoAction, map: "fk_app_permissions_permission_id")
+
+  @@id([app_id, permission_id])
+}
+
+model app_release_media {
+  id             String       @id
+  created_at     DateTime?    @db.Timestamptz(6)
+  updated_at     DateTime?    @db.Timestamptz(6)
+  deleted_at     DateTime?    @db.Timestamptz(6)
+  app_release_id String
+  order          BigInt?
+  device_type    BigInt?
+  key            String?
+  media_type     BigInt?
+  app_releases   app_releases @relation(fields: [app_release_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_app_release_media_app_release")
+
+  @@index([deleted_at], map: "idx_app_release_media_deleted_at")
+}
+
+model app_releases {
+  id                   String                 @id
+  created_at           DateTime?              @db.Timestamptz(6)
+  updated_at           DateTime?              @db.Timestamptz(6)
+  deleted_at           DateTime?              @db.Timestamptz(6)
+  app_id               String
+  deploy_log_id        String?
+  release_note         String
+  version              String
+  status               BigInt?
+  app_release_media    app_release_media[]
+  apps                 apps                   @relation(fields: [app_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_app_releases_app_id")
+  deploy_logs          deploy_logs?           @relation(fields: [deploy_log_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_app_releases_deploy_log")
+  pending_updates      pending_updates[]
+  submit_log_meta_data submit_log_meta_data[]
+
+  @@index([deleted_at], map: "idx_app_releases_deleted_at")
+}
+
+model app_space_mappings {
+  id         String    @id
+  created_at DateTime? @db.Timestamptz(6)
+  updated_at DateTime? @db.Timestamptz(6)
+  deleted_at DateTime? @db.Timestamptz(6)
+  space_id   String?
+  app_id     String?
+  apps       apps?     @relation(fields: [app_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_app_space_mappings_app_id")
+
+  @@index([deleted_at], map: "idx_app_space_mappings_deleted_at")
+}
+
+model app_user_permissions {
+  user_id       String      @db.VarChar(255)
+  app_id        String      @db.VarChar(255)
+  permission_id String      @db.VarChar(255)
+  created_at    DateTime?   @db.Timestamptz(6)
+  updated_at    DateTime?   @db.Timestamptz(6)
+  shield_apps   shield_apps @relation(fields: [app_id], references: [app_id], onDelete: NoAction, onUpdate: NoAction, map: "fk_app_user_permissions_app_id")
+  permissions   permissions @relation(fields: [permission_id], references: [permission_id], onDelete: NoAction, onUpdate: NoAction, map: "fk_app_user_permissions_permission_id")
+  users         users       @relation(fields: [user_id], references: [user_id], onDelete: NoAction, onUpdate: NoAction, map: "fk_app_user_permissions_user_id")
+
+  @@id([user_id, app_id, permission_id])
+}
+
+model appblock_version_language_mappings {
+  id                  String            @id
+  created_at          DateTime?         @db.Timestamptz(6)
+  updated_at          DateTime?         @db.Timestamptz(6)
+  deleted_at          DateTime?         @db.Timestamptz(6)
+  appblock_version_id String
+  language_id         String
+  appblock_versions   appblock_versions @relation(fields: [appblock_version_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_appblock_version_language_mappings_appblock_version")
+  languages           languages         @relation(fields: [language_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_appblock_version_language_mappings_language")
+
+  @@unique([appblock_version_id, language_id], map: "avrm_appblock_version_id_language_id")
+  @@index([deleted_at], map: "idx_appblock_version_language_mappings_deleted_at")
+}
+
+model appblock_version_language_version_mappings {
+  id                  String            @id
+  created_at          DateTime?         @db.Timestamptz(6)
+  updated_at          DateTime?         @db.Timestamptz(6)
+  deleted_at          DateTime?         @db.Timestamptz(6)
+  appblock_version_id String
+  language_version_id String
+  appblock_versions   appblock_versions @relation(fields: [appblock_version_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_appblock_version_language_version_mappings_appblock_version")
+  language_versions   language_versions @relation(fields: [language_version_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_appblock_version_language_version_mappings_language_version")
+
+  @@unique([appblock_version_id, language_version_id], map: "avrm_appblock_version_id_language_version_id")
+  @@index([deleted_at], map: "idx_appblock_version_language_version_mappings_deleted_at")
+}
+
+model appblock_version_sdm_version_mappings {
+  id                  String            @id
+  created_at          DateTime?         @db.Timestamptz(6)
+  updated_at          DateTime?         @db.Timestamptz(6)
+  deleted_at          DateTime?         @db.Timestamptz(6)
+  appblock_version_id String
+  sdm_version_id      String
+  appblock_versions   appblock_versions @relation(fields: [appblock_version_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_appblock_version_sdm_version_mappings_appblock_version")
+  sdm_versions        sdm_versions      @relation(fields: [sdm_version_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_appblock_version_sdm_version_mappings_sdm_version")
+
+  @@unique([appblock_version_id, sdm_version_id], map: "avrm_appblock_version_id_sdm_version_id")
+  @@index([deleted_at], map: "idx_appblock_version_sdm_version_mappings_deleted_at")
+}
+
+model appblock_versions {
+  id                                         String                                       @id
+  created_at                                 DateTime?                                    @db.Timestamptz(6)
+  updated_at                                 DateTime?                                    @db.Timestamptz(6)
+  deleted_at                                 DateTime?                                    @db.Timestamptz(6)
+  name                                       String?
+  version                                    String                                       @unique
+  description                                String?
+  appblock_version_language_mappings         appblock_version_language_mappings[]
+  appblock_version_language_version_mappings appblock_version_language_version_mappings[]
+  appblock_version_sdm_version_mappings      appblock_version_sdm_version_mappings[]
+  block_appblock_version_mappings            block_appblock_version_mappings[]
+
+  @@index([deleted_at], map: "idx_appblock_versions_deleted_at")
+}
+
+model appblocks_profit_details {
+  id                  String                @id
+  created_at          DateTime?             @db.Timestamptz(6)
+  updated_at          DateTime?             @db.Timestamptz(6)
+  deleted_at          DateTime?             @db.Timestamptz(6)
+  profit_amount       Decimal?              @db.Decimal
+  transaction_details transaction_details[]
+
+  @@index([deleted_at], map: "idx_appblocks_profit_details_deleted_at")
+}
+
+model apps {
+  id                      String                    @id
+  created_at              DateTime?                 @db.Timestamptz(6)
+  updated_at              DateTime?                 @db.Timestamptz(6)
+  deleted_at              DateTime?                 @db.Timestamptz(6)
+  name                    String?
+  display_name            String?
+  app_id                  String                    @unique
+  status                  BigInt?
+  deployment_mode         BigInt?
+  app_block_id            String?
+  language                String?
+  pricing_type            BigInt?
+  privacy_policy_url      String?
+  company_name            String?
+  contact_email           String?
+  app_category_mappings   app_category_mappings[]
+  app_releases            app_releases[]
+  app_space_mappings      app_space_mappings[]
+  blocks                  blocks?                   @relation(fields: [app_block_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_apps_block")
+  entities                entities                  @relation(fields: [id], references: [entity_id], onDelete: NoAction, onUpdate: NoAction, map: "fk_apps_entity")
+  block_app_assigns       block_app_assigns[]
+  block_updates_pulls     block_updates_pulls[]
+  cad_details             cad_details[]
+  database_instance_infos database_instance_infos[]
+  dns_record_infos        dns_record_infos[]
+  environments            environments[]
+  pending_updates         pending_updates[]
+  submit_log_meta_data    submit_log_meta_data[]
+  vm_infos                vm_infos[]
+
+  @@index([deleted_at], map: "idx_apps_deleted_at")
+}
+
+model aws_rds_configs {
+  id                   String    @id
+  created_at           DateTime? @db.Timestamptz(6)
+  updated_at           DateTime? @db.Timestamptz(6)
+  deleted_at           DateTime? @db.Timestamptz(6)
+  instance_class       String?
+  core_count           BigInt?
+  vcpu                 BigInt?
+  cpu_credits_per_hour BigInt?
+  memory               BigInt?
+  network_performance  String?
+  engine               String?
+  engine_version       String?
+  default_port         BigInt?
+  default_storage      BigInt?
+
+  @@index([deleted_at], map: "idx_aws_rds_configs_deleted_at")
+}
+
+model block_activities {
+  id            String    @id
+  created_at    DateTime? @db.Timestamptz(6)
+  updated_at    DateTime? @db.Timestamptz(6)
+  deleted_at    DateTime? @db.Timestamptz(6)
+  block_id      String?
+  user_id       String?
+  activity_type String?
+  blocks        blocks?   @relation(fields: [block_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_block_activities_block")
+
+  @@index([deleted_at], map: "idx_block_activities_deleted_at")
+}
+
+model block_app_assigns {
+  id         String    @id
+  created_at DateTime? @db.Timestamptz(6)
+  updated_at DateTime? @db.Timestamptz(6)
+  deleted_at DateTime? @db.Timestamptz(6)
+  app_id     String
+  block_id   String
+  space_id   String
+  status     BigInt?
+  apps       apps      @relation(fields: [app_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_block_app_assigns_app_id")
+  blocks     blocks    @relation(fields: [block_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_block_app_assigns_block")
+  spaces     spaces    @relation(fields: [space_id], references: [space_id], onDelete: NoAction, onUpdate: NoAction, map: "fk_block_app_assigns_space_id")
+
+  @@unique([app_id, block_id], map: "baa_app_id_block_id")
+  @@index([deleted_at], map: "idx_block_app_assigns_deleted_at")
+}
+
+model block_appblock_version_mappings {
+  id                  String            @id
+  created_at          DateTime?         @db.Timestamptz(6)
+  updated_at          DateTime?         @db.Timestamptz(6)
+  deleted_at          DateTime?         @db.Timestamptz(6)
+  block_id            String
+  block_version_id    String
+  appblock_version_id String
+  appblock_versions   appblock_versions @relation(fields: [appblock_version_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_block_appblock_version_mappings_appblock_version")
+  blocks              blocks            @relation(fields: [block_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_block_appblock_version_mappings_block")
+  block_versions      block_versions    @relation(fields: [block_version_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_block_appblock_version_mappings_version")
+
+  @@unique([block_id, block_version_id, appblock_version_id], map: "avbm_block_id_block_version_id_appblock_version_id")
+  @@index([deleted_at], map: "idx_block_appblock_version_mappings_deleted_at")
+}
+
+model block_authors {
+  id          BigInt    @id @default(autoincrement())
+  created_at  DateTime? @db.Timestamptz(6)
+  updated_at  DateTime? @db.Timestamptz(6)
+  deleted_at  DateTime? @db.Timestamptz(6)
+  user_id     String?
+  block_id    String?
+  author_type BigInt?
+  blocks      blocks?   @relation(fields: [block_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_block_authors_block")
+
+  @@index([deleted_at], map: "idx_block_authors_deleted_at")
+}
+
+model block_category_mappings {
+  id          String      @id
+  created_at  DateTime?   @db.Timestamptz(6)
+  updated_at  DateTime?   @db.Timestamptz(6)
+  deleted_at  DateTime?   @db.Timestamptz(6)
+  category_id String?
+  block_id    String?
+  blocks      blocks?     @relation(fields: [block_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_block_category_mappings_block")
+  categories  categories? @relation(fields: [category_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_block_category_mappings_block_category")
+
+  @@index([deleted_at], map: "idx_block_category_mappings_deleted_at")
+}
+
+model block_dependency_mappings {
+  id               String         @id
+  created_at       DateTime?      @db.Timestamptz(6)
+  updated_at       DateTime?      @db.Timestamptz(6)
+  deleted_at       DateTime?      @db.Timestamptz(6)
+  block_id         String
+  block_version_id String
+  dependency_id    String
+  blocks           blocks         @relation(fields: [block_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_block_dependency_mappings_block")
+  dependencies     dependencies   @relation(fields: [dependency_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_block_dependency_mappings_dependency")
+  block_versions   block_versions @relation(fields: [block_version_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_block_dependency_mappings_version")
+
+  @@unique([block_id, block_version_id, dependency_id], map: "idx_block_id_block_version_id_dependency_id")
+  @@index([deleted_at], map: "idx_block_dependency_mappings_deleted_at")
+}
+
+model block_language_version_mappings {
+  id                  String            @id
+  created_at          DateTime?         @db.Timestamptz(6)
+  updated_at          DateTime?         @db.Timestamptz(6)
+  deleted_at          DateTime?         @db.Timestamptz(6)
+  block_id            String
+  block_version_id    String
+  language_version_id String
+  blocks              blocks            @relation(fields: [block_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_block_language_version_mappings_block")
+  language_versions   language_versions @relation(fields: [language_version_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_block_language_version_mappings_language_version")
+  block_versions      block_versions    @relation(fields: [block_version_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_block_language_version_mappings_version")
+
+  @@unique([block_id, block_version_id, language_version_id], map: "lvbm_block_id_block_version_id_language_version_id")
+  @@index([deleted_at], map: "idx_block_language_version_mappings_deleted_at")
+}
+
+model block_mappings {
+  id                                             String    @id
+  created_at                                     DateTime? @db.Timestamptz(6)
+  updated_at                                     DateTime? @db.Timestamptz(6)
+  deleted_at                                     DateTime? @db.Timestamptz(6)
+  app_block_id                                   String?
+  relation_type                                  BigInt?
+  is_api                                         Boolean?
+  block_id                                       String?
+  related_block_id                               String?
+  status                                         BigInt    @default(1)
+  blocks_block_mappings_app_block_idToblocks     blocks?   @relation("block_mappings_app_block_idToblocks", fields: [app_block_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_block_mappings_app_block")
+  blocks_block_mappings_block_idToblocks         blocks?   @relation("block_mappings_block_idToblocks", fields: [block_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_block_mappings_block")
+  blocks_block_mappings_related_block_idToblocks blocks?   @relation("block_mappings_related_block_idToblocks", fields: [related_block_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_block_mappings_related_block")
+
+  @@index([deleted_at], map: "idx_block_mappings_deleted_at")
+}
+
+/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
+model block_meta_data {
+  block_id         String?
+  schema           Json?
+  sample_env       Json?
+  app_config       Json?
+  read_me          String?
+  block_version_id String?
+  parent_block_ids String[]
+  created_at       DateTime?       @db.Timestamptz(6)
+  updated_at       DateTime?       @db.Timestamptz(6)
+  deleted_at       DateTime?       @db.Timestamptz(6)
+  blocks           blocks?         @relation(fields: [block_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_block_meta_data_block")
+  block_versions   block_versions? @relation(fields: [block_version_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_block_meta_data_block_version")
+
+  @@index([deleted_at], map: "idx_block_meta_data_deleted_at")
+  @@ignore
+}
+
+model block_runtime_mappings {
+  id               String         @id
+  created_at       DateTime?      @db.Timestamptz(6)
+  updated_at       DateTime?      @db.Timestamptz(6)
+  deleted_at       DateTime?      @db.Timestamptz(6)
+  block_id         String
+  block_version_id String
+  runtime_id       String
+  blocks           blocks         @relation(fields: [block_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_block_runtime_mappings_block")
+  runtimes         runtimes       @relation(fields: [runtime_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_block_runtime_mappings_runtime")
+  block_versions   block_versions @relation(fields: [block_version_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_block_runtime_mappings_version")
+
+  @@unique([block_id, block_version_id, runtime_id], map: "idx_block_id_block_version_id_runtime_id")
+  @@index([deleted_at], map: "idx_block_runtime_mappings_deleted_at")
+}
+
+model block_space_mappings {
+  id                String    @id
+  created_at        DateTime? @db.Timestamptz(6)
+  updated_at        DateTime? @db.Timestamptz(6)
+  deleted_at        DateTime? @db.Timestamptz(6)
+  space_id          String
+  block_id          String
+  space_name        String
+  block_name        String
+  root_package_name String?
+  blocks            blocks    @relation(fields: [block_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_block_space_mappings_block")
+
+  @@unique([space_name, block_name, root_package_name], map: "bsm_space_name_block_name_root_package_name")
+  @@index([deleted_at], map: "idx_block_space_mappings_deleted_at")
+}
+
+model block_tags_mappings {
+  id         String    @id
+  created_at DateTime? @db.Timestamptz(6)
+  updated_at DateTime? @db.Timestamptz(6)
+  deleted_at DateTime? @db.Timestamptz(6)
+  tag_id     String?
+  block_id   String?
+  blocks     blocks?   @relation(fields: [block_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_block_tags_mappings_block")
+  tags       tags?     @relation(fields: [tag_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_block_tags_mappings_block_tag")
+
+  @@index([deleted_at], map: "idx_block_tags_mappings_deleted_at")
+}
+
+model block_updates_pulls {
+  id               String         @id
+  created_at       DateTime?      @db.Timestamptz(6)
+  updated_at       DateTime?      @db.Timestamptz(6)
+  deleted_at       DateTime?      @db.Timestamptz(6)
+  app_id           String
+  block_id         String
+  block_version_id String
+  apps             apps           @relation(fields: [app_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_block_updates_pulls_app_id")
+  blocks           blocks         @relation(fields: [block_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_block_updates_pulls_block")
+  block_versions   block_versions @relation(fields: [block_version_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_block_updates_pulls_block_version")
+
+  @@unique([app_id, block_id, block_version_id], map: "bup_app_id_block_id_block_version_id")
+  @@index([deleted_at], map: "idx_block_updates_pulls_deleted_at")
+}
+
+model block_variant_hierarchies {
+  id                                                  String          @id
+  created_at                                          DateTime?       @db.Timestamptz(6)
+  updated_at                                          DateTime?       @db.Timestamptz(6)
+  deleted_at                                          DateTime?       @db.Timestamptz(6)
+  ancestor                                            String?
+  descendant                                          String?
+  version_id                                          String?
+  num_level                                           BigInt?
+  blocks_block_variant_hierarchies_ancestorToblocks   blocks?         @relation("block_variant_hierarchies_ancestorToblocks", fields: [ancestor], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_block_variant_hierarchies_ancestor_variant")
+  block_versions                                      block_versions? @relation(fields: [version_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_block_variant_hierarchies_ancestor_version")
+  blocks_block_variant_hierarchies_descendantToblocks blocks?         @relation("block_variant_hierarchies_descendantToblocks", fields: [descendant], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_block_variant_hierarchies_descendant_variant")
+
+  @@index([deleted_at], map: "idx_block_variant_hierarchies_deleted_at")
+}
+
+model block_versions {
+  id                              String                            @id
+  created_at                      DateTime?                         @db.Timestamptz(6)
+  updated_at                      DateTime?                         @db.Timestamptz(6)
+  deleted_at                      DateTime?                         @db.Timestamptz(6)
+  version_number                  String?
+  block_id                        String?
+  status                          BigInt?
+  release_notes                   String?
+  source_code_key                 String?
+  block_appblock_version_mappings block_appblock_version_mappings[]
+  block_dependency_mappings       block_dependency_mappings[]
+  block_language_version_mappings block_language_version_mappings[]
+  block_meta_data                 block_meta_data[]                 @ignore
+  block_runtime_mappings          block_runtime_mappings[]
+  block_updates_pulls             block_updates_pulls[]
+  block_variant_hierarchies       block_variant_hierarchies[]
+  blocks                          blocks?                           @relation(fields: [block_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_block_versions_block")
+  inventory_approvals             inventory_approvals[]
+
+  @@index([deleted_at], map: "idx_block_versions_deleted_at")
+}
+
+model blocks {
+  id                                                                     String                            @id
+  created_at                                                             DateTime?                         @db.Timestamptz(6)
+  updated_at                                                             DateTime?                         @db.Timestamptz(6)
+  deleted_at                                                             DateTime?                         @db.Timestamptz(6)
+  block_type                                                             BigInt?
+  block_name                                                             String
+  block_short_name                                                       String?
+  block_desc                                                             String?
+  is_public                                                              Boolean?
+  git_url                                                                String?
+  lang                                                                   BigInt?
+  status                                                                 BigInt                            @default(1)
+  verified                                                               Boolean                           @default(false)
+  block_visibility                                                       BigInt                            @default(3)
+  root_package_block_id                                                  String?
+  is_searchable                                                          Boolean?                          @default(false)
+  apps                                                                   apps[]
+  block_activities                                                       block_activities[]
+  block_app_assigns                                                      block_app_assigns[]
+  block_appblock_version_mappings                                        block_appblock_version_mappings[]
+  block_authors                                                          block_authors[]
+  block_category_mappings                                                block_category_mappings[]
+  block_dependency_mappings                                              block_dependency_mappings[]
+  block_language_version_mappings                                        block_language_version_mappings[]
+  block_mappings_block_mappings_app_block_idToblocks                     block_mappings[]                  @relation("block_mappings_app_block_idToblocks")
+  block_mappings_block_mappings_block_idToblocks                         block_mappings[]                  @relation("block_mappings_block_idToblocks")
+  block_mappings_block_mappings_related_block_idToblocks                 block_mappings[]                  @relation("block_mappings_related_block_idToblocks")
+  block_meta_data                                                        block_meta_data[]                 @ignore
+  block_runtime_mappings                                                 block_runtime_mappings[]
+  block_space_mappings                                                   block_space_mappings[]
+  block_tags_mappings                                                    block_tags_mappings[]
+  block_updates_pulls                                                    block_updates_pulls[]
+  block_variant_hierarchies_block_variant_hierarchies_ancestorToblocks   block_variant_hierarchies[]       @relation("block_variant_hierarchies_ancestorToblocks")
+  block_variant_hierarchies_block_variant_hierarchies_descendantToblocks block_variant_hierarchies[]       @relation("block_variant_hierarchies_descendantToblocks")
+  block_versions                                                         block_versions[]
+  entities_blocks_idToentities                                           entities                          @relation("blocks_idToentities", fields: [id], references: [entity_id], onDelete: NoAction, onUpdate: NoAction, map: "fk_blocks_entity")
+  entities_blocks_root_package_block_idToentities                        entities?                         @relation("blocks_root_package_block_idToentities", fields: [root_package_block_id], references: [entity_id], onDelete: NoAction, onUpdate: NoAction, map: "fk_blocks_root_entity")
+  inventories                                                            inventories[]
+  jobs                                                                   jobs[]
+  order_item_details                                                     order_item_details[]
+  order_items_order_items_block_idToblocks                               order_items[]                     @relation("order_items_block_idToblocks")
+  order_items_order_items_variant_block_idToblocks                       order_items[]                     @relation("order_items_variant_block_idToblocks")
+  upload_blocks                                                          upload_blocks[]
+
+  @@index([deleted_at], map: "idx_blocks_deleted_at")
+}
+
+model business_domains {
+  id                                 String                               @id
+  created_at                         DateTime?                            @db.Timestamptz(6)
+  updated_at                         DateTime?                            @db.Timestamptz(6)
+  deleted_at                         DateTime?                            @db.Timestamptz(6)
+  name                               String                               @unique
+  display_name                       String
+  description                        String?
+  sdm_model_business_domain_mappings sdm_model_business_domain_mappings[]
+
+  @@index([deleted_at], map: "idx_business_domains_deleted_at")
+}
+
+model cad_details {
+  id                               String       @id
+  created_at                       DateTime?    @db.Timestamptz(6)
+  updated_at                       DateTime?    @db.Timestamptz(6)
+  deleted_at                       DateTime?    @db.Timestamptz(6)
+  app_id                           String
+  space_id                         String
+  environment_id                   String
+  container_name                   String
+  repository_id                    String?
+  repository_name                  String?
+  repository_uri                   String?
+  repository_data                  Json?
+  cluster_arn                      String?
+  cluster_name                     String?
+  cluster_data                     Json?
+  task_definition_arn              String?
+  task_definition_family           String?
+  task_definition_data             Json?
+  service_arn                      String?
+  service_name                     String?
+  service_data                     Json?
+  load_balancer_arn                String?
+  load_balancer_name               String?
+  load_balancer_data               Json?
+  target_group_arn                 String?
+  target_group_name                String?
+  target_group_data                Json?
+  auto_scaling_policies            Json?
+  auto_scalable_target_resource_id String?
+  apps                             apps         @relation(fields: [app_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_cad_details_app_id")
+  environments                     environments @relation(fields: [environment_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_cad_details_environment")
+
+  @@unique([environment_id, container_name], map: "cad_environment_id_container_name")
+  @@index([deleted_at], map: "idx_cad_details_deleted_at")
+}
+
+model cart_item_hierarchies {
+  id                                                     String      @id
+  created_at                                             DateTime?   @db.Timestamptz(6)
+  updated_at                                             DateTime?   @db.Timestamptz(6)
+  deleted_at                                             DateTime?   @db.Timestamptz(6)
+  parent_id                                              String?
+  child_id                                               String?
+  parent_order_item_id                                   String?
+  cart_items_cart_item_hierarchies_child_idTocart_items  cart_items? @relation("cart_item_hierarchies_child_idTocart_items", fields: [child_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_cart_item_hierarchies_child_cart_item")
+  cart_items_cart_item_hierarchies_parent_idTocart_items cart_items? @relation("cart_item_hierarchies_parent_idTocart_items", fields: [parent_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_cart_item_hierarchies_parent_cart_item")
+
+  @@index([deleted_at], map: "idx_cart_item_hierarchies_deleted_at")
+}
+
+model cart_items {
+  id                                                                String                  @id
+  created_at                                                        DateTime?               @db.Timestamptz(6)
+  updated_at                                                        DateTime?               @db.Timestamptz(6)
+  deleted_at                                                        DateTime?               @db.Timestamptz(6)
+  cart_id                                                           String?
+  inventory_item_id                                                 String?
+  owner_space_id                                                    String?
+  cart_item_hierarchies_cart_item_hierarchies_child_idTocart_items  cart_item_hierarchies[] @relation("cart_item_hierarchies_child_idTocart_items")
+  cart_item_hierarchies_cart_item_hierarchies_parent_idTocart_items cart_item_hierarchies[] @relation("cart_item_hierarchies_parent_idTocart_items")
+  carts                                                             carts?                  @relation(fields: [cart_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_cart_items_carts")
+  inventory_items                                                   inventory_items?        @relation(fields: [inventory_item_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_cart_items_inventory_item")
+  spaces                                                            spaces?                 @relation(fields: [owner_space_id], references: [space_id], onDelete: NoAction, onUpdate: NoAction, map: "fk_cart_items_space")
+
+  @@index([deleted_at], map: "idx_cart_items_deleted_at")
+}
+
+model carts {
+  id         String       @id
+  created_at DateTime?    @db.Timestamptz(6)
+  updated_at DateTime?    @db.Timestamptz(6)
+  deleted_at DateTime?    @db.Timestamptz(6)
+  created_by String       @unique(map: "user_id") @db.VarChar(255)
+  cart_items cart_items[]
+  users      users        @relation(fields: [created_by], references: [user_id], onDelete: NoAction, onUpdate: NoAction, map: "fk_carts_user")
+
+  @@index([deleted_at], map: "idx_carts_deleted_at")
+}
+
+model categories {
+  id                                                               String                    @id
+  created_at                                                       DateTime?                 @db.Timestamptz(6)
+  updated_at                                                       DateTime?                 @db.Timestamptz(6)
+  deleted_at                                                       DateTime?                 @db.Timestamptz(6)
+  category_name                                                    String?
+  description                                                      String?
+  block_category_mappings                                          block_category_mappings[]
+  category_hierarchies_category_hierarchies_ancestorTocategories   category_hierarchies[]    @relation("category_hierarchies_ancestorTocategories")
+  category_hierarchies_category_hierarchies_descendantTocategories category_hierarchies[]    @relation("category_hierarchies_descendantTocategories")
+
+  @@index([deleted_at], map: "idx_categories_deleted_at")
+}
+
+model category_hierarchies {
+  id                                                     String      @id
+  created_at                                             DateTime?   @db.Timestamptz(6)
+  updated_at                                             DateTime?   @db.Timestamptz(6)
+  deleted_at                                             DateTime?   @db.Timestamptz(6)
+  ancestor                                               String?
+  descendant                                             String?
+  num_level                                              BigInt?
+  categories_category_hierarchies_ancestorTocategories   categories? @relation("category_hierarchies_ancestorTocategories", fields: [ancestor], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_category_hierarchies_ancestor_category")
+  categories_category_hierarchies_descendantTocategories categories? @relation("category_hierarchies_descendantTocategories", fields: [descendant], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_category_hierarchies_descendant_category")
+
+  @@index([deleted_at], map: "idx_category_hierarchies_deleted_at")
+}
+
+model cron_logs {
+  id         String    @id
+  created_at DateTime? @db.Timestamptz(6)
+  updated_at DateTime? @db.Timestamptz(6)
+  deleted_at DateTime? @db.Timestamptz(6)
+  data       Json?
+  name       String?
+
+  @@index([deleted_at], map: "idx_cron_logs_deleted_at")
+}
+
+model database_infos {
+  id             String        @id
+  created_at     DateTime?     @db.Timestamptz(6)
+  updated_at     DateTime?     @db.Timestamptz(6)
+  deleted_at     DateTime?     @db.Timestamptz(6)
+  name           String?
+  environment_id String?
+  status         Boolean?
+  environments   environments? @relation(fields: [environment_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_database_infos_environment")
+
+  @@index([deleted_at], map: "idx_database_infos_deleted_at")
+}
+
+model database_instance_infos {
+  id                      String    @id
+  created_at              DateTime? @db.Timestamptz(6)
+  updated_at              DateTime? @db.Timestamptz(6)
+  deleted_at              DateTime? @db.Timestamptz(6)
+  name                    String?
+  app_id                  String?
+  aws_arn                 String?
+  db_instance_identifier  String?
+  db_instance_resource_id String?
+  status                  BigInt?
+  aws_end_point           String?
+  dns_record              Json?
+  dns_record_id           String?
+  domain                  String?
+  memory                  BigInt?
+  core_count              BigInt?
+  vcpu                    BigInt?
+  apps                    apps?     @relation(fields: [app_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "database_instance_infos_app_id")
+
+  @@index([deleted_at], map: "idx_database_instance_infos_deleted_at")
+}
+
+model default_user_spaces {
+  id             String    @id
+  created_at     DateTime? @db.Timestamptz(6)
+  updated_at     DateTime? @db.Timestamptz(6)
+  deleted_at     DateTime? @db.Timestamptz(6)
+  owner_user_id  String?   @unique @db.VarChar(255)
+  owner_space_id String?
+  opt_counter    Int?      @db.SmallInt
+  spaces         spaces?   @relation(fields: [owner_space_id], references: [space_id], onDelete: NoAction, onUpdate: NoAction, map: "fk_default_user_spaces_owner_space")
+  users          users?    @relation(fields: [owner_user_id], references: [user_id], onDelete: NoAction, onUpdate: NoAction, map: "fk_default_user_spaces_owner_user")
+
+  @@index([deleted_at], map: "idx_default_user_spaces_deleted_at")
+}
+
+model dependencies {
+  id                                   String                                 @id
+  created_at                           DateTime?                              @db.Timestamptz(6)
+  updated_at                           DateTime?                              @db.Timestamptz(6)
+  deleted_at                           DateTime?                              @db.Timestamptz(6)
+  name                                 String
+  version                              String
+  type                                 BigInt
+  description                          String?
+  url                                  String?
+  block_dependency_mappings            block_dependency_mappings[]
+  dependency_language_version_mappings dependency_language_version_mappings[]
+
+  @@unique([name, version, type], map: "dependencies_name_version_type")
+  @@index([deleted_at], map: "idx_dependencies_deleted_at")
+}
+
+model dependency_language_version_mappings {
+  id                  String            @id
+  created_at          DateTime?         @db.Timestamptz(6)
+  updated_at          DateTime?         @db.Timestamptz(6)
+  deleted_at          DateTime?         @db.Timestamptz(6)
+  dependency_id       String
+  language_version_id String
+  dependencies        dependencies      @relation(fields: [dependency_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_dependency_language_version_mappings_dependency")
+  language_versions   language_versions @relation(fields: [language_version_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_dependency_language_version_mappings_language_version")
+
+  @@unique([dependency_id, language_version_id], map: "dprm_dependency_id_language_version_id")
+  @@index([deleted_at], map: "idx_dependency_language_version_mappings_deleted_at")
+}
+
+model dependency_submits {
+  id                                           String    @id
+  created_at                                   DateTime? @db.Timestamptz(6)
+  updated_at                                   DateTime? @db.Timestamptz(6)
+  deleted_at                                   DateTime? @db.Timestamptz(6)
+  name                                         String
+  version                                      String
+  type                                         BigInt
+  url                                          String?
+  description                                  String?
+  status                                       BigInt?
+  language_version_ids                         String[]
+  submitted_by                                 String?   @db.VarChar(255)
+  reviewed_by                                  String?   @db.VarChar(255)
+  reviewed_on                                  DateTime? @db.Timestamp(6)
+  users_dependency_submits_reviewed_byTousers  users?    @relation("dependency_submits_reviewed_byTousers", fields: [reviewed_by], references: [user_id], onDelete: NoAction, onUpdate: NoAction, map: "fk_dependency_submits_reviewed_user")
+  users_dependency_submits_submitted_byTousers users?    @relation("dependency_submits_submitted_byTousers", fields: [submitted_by], references: [user_id], onDelete: NoAction, onUpdate: NoAction, map: "fk_dependency_submits_submitted_user")
+
+  @@index([deleted_at], map: "idx_dependency_submits_deleted_at")
+}
+
+model deploy_histories {
+  id            String       @id
+  created_at    DateTime?    @db.Timestamptz(6)
+  updated_at    DateTime?    @db.Timestamptz(6)
+  deleted_at    DateTime?    @db.Timestamptz(6)
+  release_notes String?
+  tags          String?
+  deploy_log_id String?
+  user_name     String?
+  user_id       String?
+  deploy_logs   deploy_logs? @relation(fields: [deploy_log_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_deploy_histories_deploy_log")
+
+  @@index([deleted_at], map: "idx_deploy_histories_deleted_at")
+}
+
+model deploy_logs {
+  id                   String                 @id
+  created_at           DateTime?              @db.Timestamptz(6)
+  updated_at           DateTime?              @db.Timestamptz(6)
+  deleted_at           DateTime?              @db.Timestamptz(6)
+  tags                 String?
+  environment_id       String?
+  app_version          String?
+  status               BigInt?
+  ip_address           String?
+  ip_route             String?
+  ip_port              String?
+  meta_data            Json?
+  app_releases         app_releases[]
+  deploy_histories     deploy_histories[]
+  environments         environments?          @relation(fields: [environment_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_deploy_logs_environment")
+  submit_log_meta_data submit_log_meta_data[]
+  upload_blocks        upload_blocks[]
+
+  @@index([deleted_at], map: "idx_deploy_logs_deleted_at")
+}
+
+model dns_record_infos {
+  id             String        @id
+  created_at     DateTime?     @db.Timestamptz(6)
+  updated_at     DateTime?     @db.Timestamptz(6)
+  deleted_at     DateTime?     @db.Timestamptz(6)
+  domain         String?
+  content        String?
+  dns_record_id  String?
+  app_id         String?
+  environment_id String?
+  dns_record     Json?
+  apps           apps?         @relation(fields: [app_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_dns_record_infos_app_id")
+  environments   environments? @relation(fields: [environment_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_dns_record_infos_environment")
+
+  @@index([deleted_at], map: "idx_dns_record_infos_deleted_at")
+}
+
+model domain_infos {
+  id             String        @id
+  created_at     DateTime?     @db.Timestamptz(6)
+  updated_at     DateTime?     @db.Timestamptz(6)
+  deleted_at     DateTime?     @db.Timestamptz(6)
+  sub_domain     String?
+  url            String?
+  environment_id String?
+  is_default     Boolean?
+  type           BigInt?
+  environments   environments? @relation(fields: [environment_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_domain_infos_environment")
+
+  @@index([deleted_at], map: "idx_domain_infos_deleted_at")
+}
+
+model entities {
+  entity_id                                     String                         @id
+  created_at                                    DateTime?                      @db.Timestamptz(6)
+  updated_at                                    DateTime?                      @db.Timestamptz(6)
+  deleted_at                                    DateTime?                      @db.Timestamptz(6)
+  type                                          BigInt?
+  apps                                          apps?
+  blocks_blocks_idToentities                    blocks?                        @relation("blocks_idToentities")
+  blocks_blocks_root_package_block_idToentities blocks[]                       @relation("blocks_root_package_block_idToentities")
+  environments                                  environments?
+  pol_grp_entity_mappings                       pol_grp_entity_mappings[]
+  pol_grp_subs_entity_mappings                  pol_grp_subs_entity_mappings[]
+
+  @@index([deleted_at], map: "idx_entities_deleted_at")
+}
+
+model env_variables {
+  id             String        @id
+  created_at     DateTime?     @db.Timestamptz(6)
+  updated_at     DateTime?     @db.Timestamptz(6)
+  deleted_at     DateTime?     @db.Timestamptz(6)
+  name           String?
+  value          String?
+  environment_id String?
+  status         Boolean?
+  environments   environments? @relation(fields: [environment_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_env_variables_environment")
+
+  @@index([deleted_at], map: "idx_env_variables_deleted_at")
+}
+
+model environments {
+  id                String             @id
+  created_at        DateTime?          @db.Timestamptz(6)
+  updated_at        DateTime?          @db.Timestamptz(6)
+  deleted_at        DateTime?          @db.Timestamptz(6)
+  name              String?
+  app_id            String?
+  predefined_env_id String?
+  cad_details       cad_details[]
+  database_infos    database_infos[]
+  deploy_logs       deploy_logs[]
+  dns_record_infos  dns_record_infos[]
+  domain_infos      domain_infos[]
+  env_variables     env_variables[]
+  apps              apps?              @relation(fields: [app_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_environments_app_id")
+  entities          entities           @relation(fields: [id], references: [entity_id], onDelete: NoAction, onUpdate: NoAction, map: "fk_environments_entity")
+  predefined_envs   predefined_envs?   @relation(fields: [predefined_env_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_environments_predefined_env")
+  vm_user_infos     vm_user_infos[]
+
+  @@index([deleted_at], map: "idx_environments_deleted_at")
+}
+
+model inventories {
+  id                 String               @id
+  created_at         DateTime?            @db.Timestamptz(6)
+  updated_at         DateTime?            @db.Timestamptz(6)
+  deleted_at         DateTime?            @db.Timestamptz(6)
+  block_id           String?
+  status             BigInt?
+  item_name          String?
+  listing_start_date DateTime?            @db.Timestamptz(6)
+  listing_end_date   DateTime?            @db.Timestamptz(6)
+  development_effort BigInt?
+  created_by         String?              @db.VarChar(255)
+  development_cost   Decimal?             @db.Decimal
+  blocks             blocks?              @relation(fields: [block_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_inventories_block")
+  users              users?               @relation(fields: [created_by], references: [user_id], onDelete: NoAction, onUpdate: NoAction, map: "fk_inventories_user")
+  inventory_items    inventory_items[]
+  order_item_details order_item_details[]
+  order_items        order_items[]
+
+  @@index([deleted_at], map: "idx_inventories_deleted_at")
+}
+
+model inventory_approvals {
+  id               String          @id
+  created_at       DateTime?       @db.Timestamptz(6)
+  updated_at       DateTime?       @db.Timestamptz(6)
+  deleted_at       DateTime?       @db.Timestamptz(6)
+  type             BigInt?
+  status           BigInt?
+  rejection_type   BigInt?
+  rejection_reason String?
+  meta_data        Json?
+  block_version_id String?
+  update_type      BigInt?
+  block_versions   block_versions? @relation(fields: [block_version_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_inventory_approvals_version")
+
+  @@index([deleted_at], map: "idx_inventory_approvals_deleted_at")
+}
+
+model inventory_items {
+  id                 String         @id
+  created_at         DateTime?      @db.Timestamptz(6)
+  updated_at         DateTime?      @db.Timestamptz(6)
+  deleted_at         DateTime?      @db.Timestamptz(6)
+  inventory_id       String?
+  subscription_id    String?
+  license_id         String?
+  status             BigInt?
+  item_name          String?
+  listed_price       Decimal?       @db.Decimal
+  selling_price      Decimal?       @db.Decimal
+  discount_type      BigInt?
+  currency           String?
+  listing_start_date DateTime?      @db.Timestamptz(6)
+  listing_end_date   DateTime?      @db.Timestamptz(6)
+  created_by         String?        @db.VarChar(255)
+  discount_value     Decimal?       @db.Decimal
+  cart_items         cart_items[]
+  inventories        inventories?   @relation(fields: [inventory_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_inventory_items_inventory")
+  licenses           licenses?      @relation(fields: [license_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_inventory_items_license")
+  subscriptions      subscriptions? @relation(fields: [subscription_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_inventory_items_subscription")
+  users              users?         @relation(fields: [created_by], references: [user_id], onDelete: NoAction, onUpdate: NoAction, map: "fk_inventory_items_user")
+  order_items        order_items[]
+
+  @@index([deleted_at], map: "idx_inventory_items_deleted_at")
+}
+
+model invite_details {
+  id               String    @id
+  created_at       DateTime? @db.Timestamptz(6)
+  updated_at       DateTime? @db.Timestamptz(6)
+  deleted_at       DateTime? @db.Timestamptz(6)
+  invite_id        String?
+  invited_space_id String?
+  invited_team_id  String?
+  invited_role_id  String?
+  email            String?
+  invites          invites?  @relation(fields: [invite_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_invite_details_invite")
+  roles            roles?    @relation(fields: [invited_role_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_invite_details_role")
+  spaces           spaces?   @relation(fields: [invited_space_id], references: [space_id], onDelete: NoAction, onUpdate: NoAction, map: "fk_invite_details_space")
+  teams            teams?    @relation(fields: [invited_team_id], references: [team_id], onDelete: NoAction, onUpdate: NoAction, map: "fk_invite_details_team")
+
+  @@index([deleted_at], map: "idx_invite_details_deleted_at")
+}
+
+model invites {
+  id             String           @id
+  created_at     DateTime?        @db.Timestamptz(6)
+  updated_at     DateTime?        @db.Timestamptz(6)
+  deleted_at     DateTime?        @db.Timestamptz(6)
+  notes          String?
+  created_by     String?          @db.VarChar(255)
+  status         BigInt?
+  expires_at     DateTime?        @db.Timestamptz(6)
+  invite_type    BigInt?
+  invite_link    String?
+  invite_code    String?
+  email          String?
+  invite_details invite_details[]
+  users          users?           @relation(fields: [created_by], references: [user_id], onDelete: NoAction, onUpdate: NoAction, map: "fk_invites_created_user")
+
+  @@index([deleted_at], map: "idx_invites_deleted_at")
+}
+
+model job_logs {
+  id         String    @id
+  created_at DateTime? @db.Timestamptz(6)
+  updated_at DateTime? @db.Timestamptz(6)
+  deleted_at DateTime? @db.Timestamptz(6)
+  job_id     String
+  jobs       jobs      @relation(fields: [job_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_job_logs_job")
+
+  @@index([deleted_at], map: "idx_job_logs_deleted_at")
+}
+
+model jobs {
+  id         String     @id
+  created_at DateTime?  @db.Timestamptz(6)
+  updated_at DateTime?  @db.Timestamptz(6)
+  deleted_at DateTime?  @db.Timestamptz(6)
+  block_id   String
+  schedule   String?
+  time_zone  String?
+  job_logs   job_logs[]
+  blocks     blocks     @relation(fields: [block_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_jobs_block")
+
+  @@index([deleted_at], map: "idx_jobs_deleted_at")
+}
+
+model language_versions {
+  id                                         String                                       @id
+  created_at                                 DateTime?                                    @db.Timestamptz(6)
+  updated_at                                 DateTime?                                    @db.Timestamptz(6)
+  deleted_at                                 DateTime?                                    @db.Timestamptz(6)
+  name                                       String
+  version                                    String
+  type                                       BigInt                                       @default(0)
+  language_id                                String
+  appblock_version_language_version_mappings appblock_version_language_version_mappings[]
+  block_language_version_mappings            block_language_version_mappings[]
+  dependency_language_version_mappings       dependency_language_version_mappings[]
+  languages                                  languages                                    @relation(fields: [language_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_language_versions_language")
+
+  @@unique([name, version, type], map: "idx_name_version_type")
+  @@index([deleted_at], map: "idx_language_versions_deleted_at")
+}
+
+model languages {
+  id                                 String                               @id
+  created_at                         DateTime?                            @db.Timestamptz(6)
+  updated_at                         DateTime?                            @db.Timestamptz(6)
+  deleted_at                         DateTime?                            @db.Timestamptz(6)
+  name                               String                               @unique
+  description                        String?
+  s3_url                             String?
+  appblock_version_language_mappings appblock_version_language_mappings[]
+  language_versions                  language_versions[]
+
+  @@index([deleted_at], map: "idx_languages_deleted_at")
+}
+
+model leads {
+  id         String   @id @db.Uuid
+  email      String?  @unique @db.VarChar(255)
+  status     Int?
+  created_at DateTime @db.Timestamptz(6)
+  updated_at DateTime @db.Timestamptz(6)
+}
+
+model licenses {
+  id                 String               @id
+  created_at         DateTime?            @db.Timestamptz(6)
+  updated_at         DateTime?            @db.Timestamptz(6)
+  deleted_at         DateTime?            @db.Timestamptz(6)
+  name               String?
+  period             BigInt?
+  description        String?
+  inventory_items    inventory_items[]
+  order_item_details order_item_details[]
+  order_items        order_items[]
+
+  @@index([deleted_at], map: "idx_licenses_deleted_at")
+}
+
+model member_roles {
+  id             String    @id
+  created_at     DateTime? @db.Timestamptz(6)
+  updated_at     DateTime? @db.Timestamptz(6)
+  deleted_at     DateTime? @db.Timestamptz(6)
+  owner_user_id  String?   @db.VarChar(255)
+  role_id        String?
+  owner_space_id String?
+  opt_counter    Int?      @db.SmallInt
+  users          users?    @relation(fields: [owner_user_id], references: [user_id], onDelete: NoAction, onUpdate: NoAction, map: "fk_member_roles_member_user")
+  roles          roles?    @relation(fields: [role_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_member_roles_role")
+  spaces         spaces?   @relation(fields: [owner_space_id], references: [space_id], onDelete: NoAction, onUpdate: NoAction, map: "fk_member_roles_space_member")
+
+  @@unique([owner_user_id, role_id, owner_space_id], map: "member_role_unique_index")
+  @@index([deleted_at], map: "idx_member_roles_deleted_at")
+}
+
+model members {
+  id          String    @id
+  created_at  DateTime? @db.Timestamptz(6)
+  updated_at  DateTime? @db.Timestamptz(6)
+  deleted_at  DateTime? @db.Timestamptz(6)
+  type        String?   @db.VarChar(3)
+  opt_counter Int?      @db.SmallInt
+  spaces      spaces?
+  teams       teams?
+  users       users?
+
+  @@index([deleted_at], map: "idx_members_deleted_at")
+}
+
+model order_item_details {
+  id                           String         @id
+  created_at                   DateTime?      @db.Timestamptz(6)
+  updated_at                   DateTime?      @db.Timestamptz(6)
+  deleted_at                   DateTime?      @db.Timestamptz(6)
+  inventory_id                 String?
+  block_id                     String?
+  subscription_id              String?
+  license_id                   String?
+  order_item_id                String?
+  block_name                   String?
+  block_short_name             String?
+  block_type                   BigInt?
+  listed_price                 Decimal?       @db.Decimal
+  selling_price                Decimal?       @db.Decimal
+  discount_type                BigInt?
+  discount_value               Decimal?       @db.Decimal
+  currency                     String?
+  listing_start_date           DateTime?      @db.Timestamptz(6)
+  listing_end_date             DateTime?      @db.Timestamptz(6)
+  license_name                 String?
+  license_period               BigInt?
+  subscription_name            String?
+  subscription_period          BigInt?
+  inventory_development_cost   Decimal?       @db.Decimal
+  inventory_development_effort BigInt?
+  blocks                       blocks?        @relation(fields: [block_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_order_item_details_block")
+  inventories                  inventories?   @relation(fields: [inventory_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_order_item_details_inventory")
+  licenses                     licenses?      @relation(fields: [license_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_order_item_details_license")
+  order_items                  order_items?   @relation(fields: [order_item_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_order_item_details_order_items")
+  subscriptions                subscriptions? @relation(fields: [subscription_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_order_item_details_subscription")
+
+  @@index([deleted_at], map: "idx_order_item_details_deleted_at")
+}
+
+model order_item_hierarchies {
+  id                                                        String       @id
+  created_at                                                DateTime?    @db.Timestamptz(6)
+  updated_at                                                DateTime?    @db.Timestamptz(6)
+  deleted_at                                                DateTime?    @db.Timestamptz(6)
+  parent_id                                                 String?
+  child_id                                                  String?
+  order_items_order_item_hierarchies_child_idToorder_items  order_items? @relation("order_item_hierarchies_child_idToorder_items", fields: [child_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_order_item_hierarchies_child_order_item")
+  order_items_order_item_hierarchies_parent_idToorder_items order_items? @relation("order_item_hierarchies_parent_idToorder_items", fields: [parent_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_order_item_hierarchies_parent_order_item")
+
+  @@index([deleted_at], map: "idx_order_item_hierarchies_deleted_at")
+}
+
+model order_items {
+  id                                                                   String                   @id
+  created_at                                                           DateTime?                @db.Timestamptz(6)
+  updated_at                                                           DateTime?                @db.Timestamptz(6)
+  deleted_at                                                           DateTime?                @db.Timestamptz(6)
+  order_id                                                             String?
+  space_id                                                             String?
+  inventory_item_id                                                    String?
+  payment_info_id                                                      String?
+  total_price                                                          Decimal?                 @db.Decimal
+  block_id                                                             String?
+  variant_block_id                                                     String?
+  status                                                               BigInt?
+  subscription_id                                                      String?
+  license_id                                                           String?
+  inventory_id                                                         String?
+  transaction_details_id                                               String?
+  user_payout_id                                                       String?
+  net_appblocks_share                                                  Decimal?                 @db.Decimal
+  net_payout_amount                                                    Decimal?                 @db.Decimal
+  refund_status                                                        BigInt?
+  order_item_details                                                   order_item_details[]
+  order_item_hierarchies_order_item_hierarchies_child_idToorder_items  order_item_hierarchies[] @relation("order_item_hierarchies_child_idToorder_items")
+  order_item_hierarchies_order_item_hierarchies_parent_idToorder_items order_item_hierarchies[] @relation("order_item_hierarchies_parent_idToorder_items")
+  blocks_order_items_block_idToblocks                                  blocks?                  @relation("order_items_block_idToblocks", fields: [block_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_order_items_block")
+  inventories                                                          inventories?             @relation(fields: [inventory_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_order_items_inventory")
+  inventory_items                                                      inventory_items?         @relation(fields: [inventory_item_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_order_items_inventory_item")
+  licenses                                                             licenses?                @relation(fields: [license_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_order_items_license")
+  orders                                                               orders?                  @relation(fields: [order_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_order_items_order")
+  payment_infos                                                        payment_infos?           @relation(fields: [payment_info_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_order_items_payment_info")
+  subscriptions                                                        subscriptions?           @relation(fields: [subscription_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_order_items_subscription")
+  transaction_details                                                  transaction_details?     @relation(fields: [transaction_details_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_order_items_transaction_details")
+  user_payouts                                                         user_payouts?            @relation(fields: [user_payout_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_order_items_user_payouts_id")
+  blocks_order_items_variant_block_idToblocks                          blocks?                  @relation("order_items_variant_block_idToblocks", fields: [variant_block_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_order_items_variant_block")
+
+  @@index([deleted_at], map: "idx_order_items_deleted_at")
+}
+
+model orders {
+  id            String        @id
+  created_at    DateTime?     @db.Timestamptz(6)
+  updated_at    DateTime?     @db.Timestamptz(6)
+  deleted_at    DateTime?     @db.Timestamptz(6)
+  owner_user_id String?       @db.VarChar(255)
+  status        BigInt?
+  order_items   order_items[]
+  users         users?        @relation(fields: [owner_user_id], references: [user_id], onDelete: NoAction, onUpdate: NoAction, map: "fk_orders_user")
+
+  @@index([deleted_at], map: "idx_orders_deleted_at")
+}
+
+model payment_infos {
+  id                   String        @id
+  created_at           DateTime?     @db.Timestamptz(6)
+  updated_at           DateTime?     @db.Timestamptz(6)
+  deleted_at           DateTime?     @db.Timestamptz(6)
+  payment_gateway_id   String        @unique(map: "payment_gateway_id")
+  payment_gateway_type BigInt?
+  order_items          order_items[]
+
+  @@index([deleted_at], map: "idx_payment_infos_deleted_at")
+}
+
+model pending_updates {
+  id             String        @id
+  created_at     DateTime?     @db.Timestamptz(6)
+  updated_at     DateTime?     @db.Timestamptz(6)
+  deleted_at     DateTime?     @db.Timestamptz(6)
+  app_id         String?
+  app_release_id String?
+  update_data    Json?
+  type           BigInt?
+  apps           apps?         @relation(fields: [app_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_pending_updates_app_id")
+  app_releases   app_releases? @relation(fields: [app_release_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_pending_updates_app_release")
+
+  @@index([deleted_at], map: "idx_pending_updates_deleted_at")
+}
+
+model per_pol_grps {
+  id               String          @id
+  created_at       DateTime?       @db.Timestamptz(6)
+  updated_at       DateTime?       @db.Timestamptz(6)
+  deleted_at       DateTime?       @db.Timestamptz(6)
+  ac_permission_id String?
+  ac_pol_grp_id    String?
+  ac_permissions   ac_permissions? @relation(fields: [ac_permission_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_per_pol_grps_ac_permission")
+  ac_pol_grps      ac_pol_grps?    @relation(fields: [ac_pol_grp_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_per_pol_grps_ac_pol_grp")
+
+  @@index([deleted_at], map: "idx_per_pol_grps_deleted_at")
+}
+
+model permissions {
+  permission_id        String                 @id @db.VarChar(255)
+  permission_name      String                 @unique @db.VarChar(100)
+  description          String?                @db.VarChar(255)
+  category             String?                @db.VarChar(255)
+  mandatory            Boolean?
+  created_at           DateTime?              @db.Timestamptz(6)
+  updated_at           DateTime?              @db.Timestamptz(6)
+  app_permissions      app_permissions[]
+  app_user_permissions app_user_permissions[]
+}
+
+model pol_gp_policies {
+  id            String       @id
+  created_at    DateTime?    @db.Timestamptz(6)
+  updated_at    DateTime?    @db.Timestamptz(6)
+  deleted_at    DateTime?    @db.Timestamptz(6)
+  ac_policy_id  String?
+  ac_pol_grp_id String?
+  opt_counter   Int?         @db.SmallInt
+  ac_pol_grps   ac_pol_grps? @relation(fields: [ac_pol_grp_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_pol_gp_policies_ac_pol_grp")
+  ac_policies   ac_policies? @relation(fields: [ac_policy_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_pol_gp_policies_ac_policy")
+
+  @@index([deleted_at], map: "idx_pol_gp_policies_deleted_at")
+}
+
+model pol_grp_entity_mappings {
+  id              String       @id
+  created_at      DateTime?    @db.Timestamptz(6)
+  updated_at      DateTime?    @db.Timestamptz(6)
+  deleted_at      DateTime?    @db.Timestamptz(6)
+  owner_entity_id String?
+  pol_grp_id      String?
+  entities        entities?    @relation(fields: [owner_entity_id], references: [entity_id], onDelete: NoAction, onUpdate: NoAction, map: "fk_pol_grp_entity_mappings_entities")
+  ac_pol_grps     ac_pol_grps? @relation(fields: [pol_grp_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_pol_grp_entity_mappings_policy_group")
+
+  @@index([deleted_at], map: "idx_pol_grp_entity_mappings_deleted_at")
+}
+
+model pol_grp_subs_entity_mappings {
+  id              String           @id
+  created_at      DateTime?        @db.Timestamptz(6)
+  updated_at      DateTime?        @db.Timestamptz(6)
+  deleted_at      DateTime?        @db.Timestamptz(6)
+  owner_entity_id String?
+  pol_grp_subs_id String?
+  entities        entities?        @relation(fields: [owner_entity_id], references: [entity_id], onDelete: NoAction, onUpdate: NoAction, map: "fk_pol_grp_subs_entity_mappings_entities")
+  ac_pol_grp_subs ac_pol_grp_subs? @relation(fields: [pol_grp_subs_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_pol_grp_subs_entity_mappings_policy_group_subs")
+
+  @@index([deleted_at], map: "idx_pol_grp_subs_entity_mappings_deleted_at")
+}
+
+model predefined_envs {
+  id           String         @id
+  created_at   DateTime?      @db.Timestamptz(6)
+  updated_at   DateTime?      @db.Timestamptz(6)
+  deleted_at   DateTime?      @db.Timestamptz(6)
+  name         String?
+  environments environments[]
+
+  @@index([deleted_at], map: "idx_predefined_envs_deleted_at")
+}
+
+model profit_sharing_details {
+  id                     String    @id
+  created_at             DateTime? @db.Timestamptz(6)
+  updated_at             DateTime? @db.Timestamptz(6)
+  deleted_at             DateTime? @db.Timestamptz(6)
+  appblocks_percentage   Decimal?  @db.Decimal
+  appblocks_fixed_amount Decimal?  @db.Decimal
+  stripe_percentage      Decimal?  @db.Decimal
+  stripe_fixed_amount    Decimal?  @db.Decimal
+  total_percentage       Decimal?  @db.Decimal
+  total_fixed_amount     Decimal?  @db.Decimal
+  status                 BigInt?
+  created_by             String?
+  updated_by             String?
+
+  @@index([deleted_at], map: "idx_profit_sharing_details_deleted_at")
+}
+
+model roles {
+  id              String            @id
+  created_at      DateTime?         @db.Timestamptz(6)
+  updated_at      DateTime?         @db.Timestamptz(6)
+  deleted_at      DateTime?         @db.Timestamptz(6)
+  name            String?
+  description     String?
+  owner_space_id  String?
+  is_owner        Boolean?
+  created_by      String?
+  updated_by      String?
+  opt_counter     Int?              @db.SmallInt
+  ac_pol_grp_subs ac_pol_grp_subs[]
+  invite_details  invite_details[]
+  member_roles    member_roles[]
+  spaces          spaces?           @relation(fields: [owner_space_id], references: [space_id], onDelete: NoAction, onUpdate: NoAction, map: "fk_roles_owner_space")
+
+  @@unique([name, owner_space_id], map: "rolename_unique_index")
+  @@index([deleted_at], map: "idx_roles_deleted_at")
+}
+
+model runtimes {
+  id                     String                   @id
+  created_at             DateTime?                @db.Timestamptz(6)
+  updated_at             DateTime?                @db.Timestamptz(6)
+  deleted_at             DateTime?                @db.Timestamptz(6)
+  name                   String
+  version                String
+  block_runtime_mappings block_runtime_mappings[]
+
+  @@unique([name, version], map: "idx_name_version")
+  @@index([deleted_at], map: "idx_runtimes_deleted_at")
+}
+
+model sdm_model_business_domain_mappings {
+  id                 String           @id
+  created_at         DateTime?        @db.Timestamptz(6)
+  updated_at         DateTime?        @db.Timestamptz(6)
+  deleted_at         DateTime?        @db.Timestamptz(6)
+  sdm_model_id       String
+  business_domain_id String
+  business_domains   business_domains @relation(fields: [business_domain_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_sdm_model_business_domain_mappings_business_domain")
+  sdm_models         sdm_models       @relation(fields: [sdm_model_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_sdm_model_business_domain_mappings_sdm_model")
+
+  @@index([deleted_at], map: "idx_sdm_model_business_domain_mappings_deleted_at")
+}
+
+model sdm_model_sdm_version_mappings {
+  id             String       @id
+  created_at     DateTime?    @db.Timestamptz(6)
+  updated_at     DateTime?    @db.Timestamptz(6)
+  deleted_at     DateTime?    @db.Timestamptz(6)
+  sdm_model_id   String
+  sdm_version_id String
+  sdm_models     sdm_models   @relation(fields: [sdm_model_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_sdm_model_sdm_version_mappings_sdm_model")
+  sdm_versions   sdm_versions @relation(fields: [sdm_version_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_sdm_model_sdm_version_mappings_sdm_version")
+
+  @@index([deleted_at], map: "idx_sdm_model_sdm_version_mappings_deleted_at")
+}
+
+model sdm_model_submits {
+  id                                          String      @id
+  created_at                                  DateTime?   @db.Timestamptz(6)
+  updated_at                                  DateTime?   @db.Timestamptz(6)
+  deleted_at                                  DateTime?   @db.Timestamptz(6)
+  name                                        String
+  sdm_version_ids                             String[]
+  schema_json                                 Json
+  business_domain_ids                         String[]
+  submitted_by                                String?     @db.VarChar(255)
+  sdm_model_id                                String?
+  reviewed_by                                 String?     @db.VarChar(255)
+  reviewed_on                                 DateTime?   @db.Timestamp(6)
+  status                                      BigInt?     @default(0)
+  users_sdm_model_submits_reviewed_byTousers  users?      @relation("sdm_model_submits_reviewed_byTousers", fields: [reviewed_by], references: [user_id], onDelete: NoAction, onUpdate: NoAction, map: "fk_sdm_model_submits_reviewed_user")
+  sdm_models                                  sdm_models? @relation(fields: [sdm_model_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_sdm_model_submits_sdm_model")
+  users_sdm_model_submits_submitted_byTousers users?      @relation("sdm_model_submits_submitted_byTousers", fields: [submitted_by], references: [user_id], onDelete: NoAction, onUpdate: NoAction, map: "fk_sdm_model_submits_submitted_user")
+
+  @@index([deleted_at], map: "idx_sdm_model_submits_deleted_at")
+}
+
+model sdm_models {
+  id                                 String                               @id
+  created_at                         DateTime?                            @db.Timestamptz(6)
+  updated_at                         DateTime?                            @db.Timestamptz(6)
+  deleted_at                         DateTime?                            @db.Timestamptz(6)
+  name                               String
+  version                            String
+  schema_json                        Json
+  sdm_model_business_domain_mappings sdm_model_business_domain_mappings[]
+  sdm_model_sdm_version_mappings     sdm_model_sdm_version_mappings[]
+  sdm_model_submits                  sdm_model_submits[]
+
+  @@unique([name, version], map: "sdm_name_version")
+  @@index([deleted_at], map: "idx_sdm_models_deleted_at")
+}
+
+model sdm_versions {
+  id                                    String                                  @id
+  created_at                            DateTime?                               @db.Timestamptz(6)
+  updated_at                            DateTime?                               @db.Timestamptz(6)
+  deleted_at                            DateTime?                               @db.Timestamptz(6)
+  name                                  String
+  version                               String                                  @unique
+  appblock_version_sdm_version_mappings appblock_version_sdm_version_mappings[]
+  sdm_model_sdm_version_mappings        sdm_model_sdm_version_mappings[]
+
+  @@index([deleted_at], map: "idx_sdm_versions_deleted_at")
+}
+
+model shield_app_domain_mappings {
+  id           String       @id @db.VarChar(255)
+  owner_app_id String?      @db.VarChar(255)
+  url          String?
+  shield_apps  shield_apps? @relation(fields: [owner_app_id], references: [app_id], onDelete: NoAction, onUpdate: NoAction, map: "fk_shield_app_domain_mappings_owner_app")
+}
+
+model shield_apps {
+  app_id                     String                       @id @db.VarChar(255)
+  client_id                  String                       @unique @db.VarChar(60)
+  client_secret              String                       @db.VarChar(255)
+  user_id                    String?                      @db.VarChar(255)
+  app_name                   String                       @unique @db.VarChar(100)
+  app_sname                  String?                      @db.VarChar(50)
+  description                String?                      @db.VarChar(255)
+  logo_url                   String?                      @db.VarChar(255)
+  app_url                    String                       @db.VarChar(255)
+  redirect_url               String[]
+  app_type                   BigInt?                      @default(4)
+  created_at                 DateTime?                    @db.Timestamptz(6)
+  updated_at                 DateTime?                    @db.Timestamptz(6)
+  deleted_at                 DateTime?                    @db.Timestamptz(6)
+  owner_space_id             String?
+  id                         BigInt?
+  ac_actions                 ac_actions[]
+  ac_resources               ac_resources[]
+  app_permissions            app_permissions[]
+  app_user_permissions       app_user_permissions[]
+  shield_app_domain_mappings shield_app_domain_mappings[]
+  users                      users?                       @relation(fields: [user_id], references: [user_id], onDelete: NoAction, onUpdate: NoAction, map: "fk_apps_created_user_id")
+  spaces                     spaces?                      @relation(fields: [owner_space_id], references: [space_id], onDelete: NoAction, onUpdate: NoAction, map: "fk_shield_apps_owner_space")
+}
+
+model space_members {
+  id             String    @id
+  created_at     DateTime? @db.Timestamptz(6)
+  updated_at     DateTime? @db.Timestamptz(6)
+  deleted_at     DateTime? @db.Timestamptz(6)
+  owner_user_id  String?   @db.VarChar(255)
+  owner_space_id String?
+  opt_counter    Int?      @db.SmallInt
+  users          users?    @relation(fields: [owner_user_id], references: [user_id], onDelete: NoAction, onUpdate: NoAction, map: "fk_space_members_member_user")
+  spaces         spaces?   @relation(fields: [owner_space_id], references: [space_id], onDelete: NoAction, onUpdate: NoAction, map: "fk_space_members_space_member")
+
+  @@index([deleted_at], map: "idx_space_members_deleted_at")
+}
+
+model spaces {
+  created_at              DateTime?             @db.Timestamptz(6)
+  updated_at              DateTime?             @db.Timestamptz(6)
+  deleted_at              DateTime?             @db.Timestamptz(6)
+  space_id                String                @id
+  legal_id                String?
+  type                    String
+  name                    String                @unique
+  business_name           String?               @unique
+  address                 String?
+  logo_url                String?
+  email                   String?
+  country                 String?
+  business_category       String?
+  description             String?
+  meta_data               Json?
+  tax_payer_id            String?
+  distinguished_name      String?
+  status                  BigInt?
+  opt_count               BigInt?
+  market_place_id         String?
+  developer_portal_access Boolean               @default(false)
+  opt_counter             Int?                  @db.SmallInt
+  ac_act_grps             ac_act_grps[]
+  ac_pol_grp_subs         ac_pol_grp_subs[]
+  ac_pol_grps             ac_pol_grps[]
+  ac_policies             ac_policies[]
+  ac_res_grps             ac_res_grps[]
+  block_app_assigns       block_app_assigns[]
+  cart_items              cart_items[]
+  default_user_spaces     default_user_spaces[]
+  invite_details          invite_details[]
+  member_roles            member_roles[]
+  roles                   roles[]
+  shield_apps             shield_apps[]
+  space_members           space_members[]
+  members                 members               @relation(fields: [space_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_spaces_member")
+  teams                   teams[]
+  user_payouts            user_payouts[]
+
+  @@index([deleted_at], map: "idx_spaces_deleted_at")
+}
+
+model stripe_details {
+  id                   String    @id @db.VarChar(255)
+  owner_user_id        String    @unique @db.VarChar(255)
+  stripe_customer_id   String    @unique @db.VarChar(255)
+  connected_account_id String?   @db.VarChar(255)
+  created_at           DateTime? @db.Timestamptz(6)
+  updated_at           DateTime? @db.Timestamptz(6)
+  users                users     @relation(fields: [owner_user_id], references: [user_id], onDelete: NoAction, onUpdate: NoAction, map: "fk_stripe_details_user")
+}
+
+model submit_log_meta_data {
+  id             String        @id
+  created_at     DateTime?     @db.Timestamptz(6)
+  updated_at     DateTime?     @db.Timestamptz(6)
+  deleted_at     DateTime?     @db.Timestamptz(6)
+  submit_log_id  String
+  app_id         String?
+  app_release_id String?
+  deploy_log_id  String?
+  apps           apps?         @relation(fields: [app_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_submit_log_meta_data_app_id")
+  app_releases   app_releases? @relation(fields: [app_release_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_submit_log_meta_data_app_release")
+  deploy_logs    deploy_logs?  @relation(fields: [deploy_log_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_submit_log_meta_data_deploy_log")
+  submit_logs    submit_logs   @relation(fields: [submit_log_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_submit_log_meta_data_submit_log")
+
+  @@index([deleted_at], map: "idx_submit_log_meta_data_deleted_at")
+}
+
+model submit_log_payloads {
+  id             String      @id
+  created_at     DateTime?   @db.Timestamptz(6)
+  updated_at     DateTime?   @db.Timestamptz(6)
+  deleted_at     DateTime?   @db.Timestamptz(6)
+  submit_log_id  String
+  comment        String?
+  attachment_url String?
+  payload_type   BigInt?
+  submit_logs    submit_logs @relation(fields: [submit_log_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_submit_log_payloads_submit_log")
+
+  @@index([deleted_at], map: "idx_submit_log_payloads_deleted_at")
+}
+
+model submit_logs {
+  id                   String                 @id
+  created_at           DateTime?              @db.Timestamptz(6)
+  updated_at           DateTime?              @db.Timestamptz(6)
+  deleted_at           DateTime?              @db.Timestamptz(6)
+  submitted_by         String
+  reviewed_by          String?
+  submit_type          BigInt?
+  review_status        BigInt?
+  submit_log_meta_data submit_log_meta_data[]
+  submit_log_payloads  submit_log_payloads[]
+
+  @@index([deleted_at], map: "idx_submit_logs_deleted_at")
+}
+
+model subscriptions {
+  id                 String               @id
+  created_at         DateTime?            @db.Timestamptz(6)
+  updated_at         DateTime?            @db.Timestamptz(6)
+  deleted_at         DateTime?            @db.Timestamptz(6)
+  name               String?
+  period             BigInt?
+  description        String?
+  type               BigInt?
+  inventory_items    inventory_items[]
+  order_item_details order_item_details[]
+  order_items        order_items[]
+
+  @@index([deleted_at], map: "idx_subscriptions_deleted_at")
+}
+
+model tags {
+  id                  String                @id
+  created_at          DateTime?             @db.Timestamptz(6)
+  updated_at          DateTime?             @db.Timestamptz(6)
+  deleted_at          DateTime?             @db.Timestamptz(6)
+  tag_name            String?
+  block_tags_mappings block_tags_mappings[]
+
+  @@index([deleted_at], map: "idx_tags_deleted_at")
+}
+
+model team_members {
+  id            String    @id
+  created_at    DateTime? @db.Timestamptz(6)
+  updated_at    DateTime? @db.Timestamptz(6)
+  deleted_at    DateTime? @db.Timestamptz(6)
+  owner_team_id String?
+  member_id     String?   @db.VarChar(255)
+  is_owner      Boolean?  @default(false)
+  opt_counter   Int?      @db.SmallInt
+  teams         teams?    @relation(fields: [owner_team_id], references: [team_id], onDelete: NoAction, onUpdate: NoAction, map: "fk_team_members_team")
+  users         users?    @relation(fields: [member_id], references: [user_id], onDelete: NoAction, onUpdate: NoAction, map: "fk_team_members_user_member")
+
+  @@unique([owner_team_id, member_id], map: "team_member_unique_index")
+  @@index([deleted_at], map: "idx_team_members_deleted_at")
+}
+
+model teams {
+  created_at      DateTime?         @db.Timestamptz(6)
+  updated_at      DateTime?         @db.Timestamptz(6)
+  deleted_at      DateTime?         @db.Timestamptz(6)
+  team_id         String            @id
+  owner_id        String
+  name            String?
+  description     String?
+  update          String?
+  updated_by      String?
+  opt_counter     Int?              @db.SmallInt
+  ac_pol_grp_subs ac_pol_grp_subs[]
+  invite_details  invite_details[]
+  team_members    team_members[]
+  members         members           @relation(fields: [team_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_teams_member")
+  spaces          spaces            @relation(fields: [owner_id], references: [space_id], onDelete: NoAction, onUpdate: NoAction, map: "fk_teams_owner_space")
+
+  @@unique([owner_id, name], map: "teamname_unique_index")
+  @@index([deleted_at], map: "idx_teams_deleted_at")
+}
+
+model transaction_details {
+  id                           String                    @id
+  created_at                   DateTime?                 @db.Timestamptz(6)
+  updated_at                   DateTime?                 @db.Timestamptz(6)
+  deleted_at                   DateTime?                 @db.Timestamptz(6)
+  stripe_transaction_id        String?
+  status                       BigInt?
+  stripe_fees_amount           Decimal?                  @db.Decimal
+  customer_amount_paid         Decimal?                  @db.Decimal
+  stripe_net_amount_received   Decimal?                  @db.Decimal
+  app_blocks_profit_details_id String?
+  order_items                  order_items[]
+  appblocks_profit_details     appblocks_profit_details? @relation(fields: [app_blocks_profit_details_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_transaction_details_appblocks_profit_details")
+
+  @@index([deleted_at], map: "idx_transaction_details_deleted_at")
+}
+
+model upload_blocks {
+  id            String       @id
+  created_at    DateTime?    @db.Timestamptz(6)
+  updated_at    DateTime?    @db.Timestamptz(6)
+  deleted_at    DateTime?    @db.Timestamptz(6)
+  deploy_log_id String?
+  block_version String?
+  block_id      String?
+  object_key    String?
+  ip_address    String?
+  ip_route      String?
+  ip_port       String?
+  block_type    BigInt?
+  meta_data     Json?
+  status        BigInt?
+  url           String?
+  blocks        blocks?      @relation(fields: [block_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_upload_blocks_block")
+  deploy_logs   deploy_logs? @relation(fields: [deploy_log_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_upload_blocks_deploy_log")
+
+  @@index([deleted_at], map: "idx_upload_blocks_deleted_at")
+}
+
+model user_payouts {
+  id                        String        @id
+  created_at                DateTime?     @db.Timestamptz(6)
+  updated_at                DateTime?     @db.Timestamptz(6)
+  deleted_at                DateTime?     @db.Timestamptz(6)
+  owner_user_id             String?       @db.VarChar(255)
+  user_connected_account_id String?
+  owner_space_id            String?
+  stripe_fees_amount        Decimal?      @db.Decimal
+  payout_amount             Decimal?      @db.Decimal
+  status                    BigInt?
+  order_items               order_items[]
+  spaces                    spaces?       @relation(fields: [owner_space_id], references: [space_id], onDelete: NoAction, onUpdate: NoAction, map: "fk_user_payouts_owner_space")
+  users                     users?        @relation(fields: [owner_user_id], references: [user_id], onDelete: NoAction, onUpdate: NoAction, map: "fk_user_payouts_owner_user")
+
+  @@index([deleted_at], map: "idx_user_payouts_deleted_at")
+}
+
+model user_providers {
+  user_id    String    @db.VarChar(255)
+  provider   BigInt    @default(1)
+  created_at DateTime? @db.Timestamptz(6)
+  updated_at DateTime? @db.Timestamptz(6)
+  users      users     @relation(fields: [user_id], references: [user_id], onDelete: NoAction, onUpdate: NoAction, map: "fk_user_providers_user_id")
+
+  @@id([user_id, provider])
+}
+
+model users {
+  user_id                                                   String                 @id @db.VarChar(255)
+  user_name                                                 String                 @unique @db.VarChar(255)
+  full_name                                                 String?                @db.VarChar(255)
+  email                                                     String                 @unique @db.VarChar(255)
+  password                                                  String                 @db.VarChar(255)
+  address1                                                  String?                @db.VarChar(150)
+  address2                                                  String?                @db.VarChar(150)
+  phone                                                     String?                @db.VarChar(20)
+  email_verification_code                                   String?                @db.VarChar(6)
+  email_verified                                            Boolean?               @default(false)
+  email_verification_expiry                                 DateTime?              @db.Timestamptz(6)
+  created_at                                                DateTime?              @db.Timestamptz(6)
+  updated_at                                                DateTime?              @db.Timestamptz(6)
+  opt_counter                                               Int?                   @db.SmallInt
+  ac_pol_grp_subs                                           ac_pol_grp_subs[]
+  ac_policies_ac_policies_created_byTousers                 ac_policies[]          @relation("ac_policies_created_byTousers")
+  ac_policies_ac_policies_updated_byTousers                 ac_policies[]          @relation("ac_policies_updated_byTousers")
+  app_user_permissions                                      app_user_permissions[]
+  carts                                                     carts?
+  default_user_spaces                                       default_user_spaces?
+  dependency_submits_dependency_submits_reviewed_byTousers  dependency_submits[]   @relation("dependency_submits_reviewed_byTousers")
+  dependency_submits_dependency_submits_submitted_byTousers dependency_submits[]   @relation("dependency_submits_submitted_byTousers")
+  inventories                                               inventories[]
+  inventory_items                                           inventory_items[]
+  invites                                                   invites[]
+  member_roles                                              member_roles[]
+  orders                                                    orders[]
+  sdm_model_submits_sdm_model_submits_reviewed_byTousers    sdm_model_submits[]    @relation("sdm_model_submits_reviewed_byTousers")
+  sdm_model_submits_sdm_model_submits_submitted_byTousers   sdm_model_submits[]    @relation("sdm_model_submits_submitted_byTousers")
+  shield_apps                                               shield_apps[]
+  space_members                                             space_members[]
+  stripe_details                                            stripe_details?
+  team_members                                              team_members[]
+  user_payouts                                              user_payouts[]
+  user_providers                                            user_providers[]
+  members                                                   members                @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_users_user_member")
+}
+
+model vm_infos {
+  id                    String          @id
+  created_at            DateTime?       @db.Timestamptz(6)
+  updated_at            DateTime?       @db.Timestamptz(6)
+  deleted_at            DateTime?       @db.Timestamptz(6)
+  app_id                String?
+  public_ip_address     String?
+  public_dns_name       String?
+  public_dns_user       String?
+  pem_private_key_value String?
+  instance_id           String?
+  status                BigInt?
+  instance_data         Json?
+  apps                  apps?           @relation(fields: [app_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_vm_infos_app_id")
+  vm_user_infos         vm_user_infos[]
+
+  @@index([deleted_at], map: "idx_vm_infos_deleted_at")
+}
+
+model vm_port_infos {
+  id              String         @id
+  created_at      DateTime?      @db.Timestamptz(6)
+  updated_at      DateTime?      @db.Timestamptz(6)
+  deleted_at      DateTime?      @db.Timestamptz(6)
+  port            BigInt?
+  vm_user_info_id String?
+  status          BigInt?
+  vm_user_infos   vm_user_infos? @relation(fields: [vm_user_info_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_vm_port_infos_vm_user_info")
+
+  @@index([deleted_at], map: "idx_vm_port_infos_deleted_at")
+}
+
+model vm_user_infos {
+  id                        String          @id
+  created_at                DateTime?       @db.Timestamptz(6)
+  updated_at                DateTime?       @db.Timestamptz(6)
+  deleted_at                DateTime?       @db.Timestamptz(6)
+  password                  String?
+  user_name                 String?
+  environment_id            String?
+  vm_info_id                String?
+  currently_deployed_folder BigInt?
+  vm_port_infos             vm_port_infos[]
+  environments              environments?   @relation(fields: [environment_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_vm_user_infos_environment")
+  vm_infos                  vm_infos?       @relation(fields: [vm_info_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_vm_user_infos_vm_info")
+
+  @@index([deleted_at], map: "idx_vm_user_infos_deleted_at")
+}

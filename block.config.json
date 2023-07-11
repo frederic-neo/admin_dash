@@ -14,8 +14,29 @@
   ],
   "repoType": "mono",
   "dependencies": {
-    "admin_metrics_be": {
-      "directory": "admin_metrics_be"
+    "admin_dash_be_shared": {
+      "directory": "admin_dash_be_shared"
+    },
+    "admin_be_newsLettersAddedList": {
+      "directory": "admin_be_newsLettersAddedList"
+    },
+    "admin_be_blocksPushedToStoreList": {
+      "directory": "admin_be_blocksPushedToStoreList"
+    },
+    "admin_be_spacesCreatedList": {
+      "directory": "admin_be_spacesCreatedList"
+    },
+    "admin_be_blocksCreatedList": {
+      "directory": "admin_be_blocksCreatedList"
+    },
+    "admin_be_userSignupsList": {
+      "directory": "admin_be_userSignupsList"
+    },
+    "admin_fe_dashboard": {
+      "directory": "admin_fe_dashboard"
+    },
+    "admin_fe_container": {
+      "directory": "admin_fe_container"
     }
   }
 }
