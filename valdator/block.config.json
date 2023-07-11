@@ -1,0 +1,20 @@
+{
+  "blockId": "HncmRH8iiI05PPerj6lmj",
+  "name": "valdator",
+  "type": "function",
+  "source": {
+    "https": "https://github.com/frederic-neo/admin_dash.git",
+    "ssh": "git@github.com:frederic-neo/admin_dash.git",
+    "branch": "block_valdator"
+  },
+  "parentBlockIDs": [
+    "sFwOS1scU3FbesfqurFKa"
+  ],
+  "repoType": "mono",
+  "language": "nodejs",
+  "supportedAppblockVersions": [
+    "1.0.0"
+  ],
+  "isPublic": false,
+  "start": "node index.js"
+}
