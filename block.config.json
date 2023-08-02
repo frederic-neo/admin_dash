@@ -37,6 +37,12 @@
     },
     "admin_fe_container": {
       "directory": "admin_fe_container"
+    },
+    "admin_fe_newsLettersAdded": {
+      "directory": "admin_fe_newsLettersAdded"
+    },
+    "admin_fe_layout": {
+      "directory": "admin_fe_layout"
     }
   }
 }

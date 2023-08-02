@@ -20,7 +20,7 @@ const admin_be_newsLettersAddedList = async ({ req, res }) => {
     // }
 
     const requestBody = await getBody(req)
-    const { start_date, end_date, name_filter, status } = requestBody
+    const { start_date, end_date, name_filter, status, order_by = 'created_at', order = 'desc' } = requestBody
 
     // const newsLettersAddedQuery = `select * from getDailyNewsLettersAdded('${start_date}', '${end_date}','${name_filter}')`
     // const newsLettersAdded = await prisma.$queryRawUnsafe(newsLettersAddedQuery)
@@ -43,14 +43,13 @@ const admin_be_newsLettersAddedList = async ({ req, res }) => {
                 },
               }
             : {},
-          status
-            ? {
-                status: {
-                  equals: status,
-                },
-              }
-            : {},
+          status && {
+            status,
+          },
         ],
+      },
+      orderBy: {
+        [order_by]: order,
       },
     })
 
