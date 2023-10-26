@@ -1,0 +1,22 @@
+{
+  "blockId": "8I43DPrqq4rTeMiX5dSDK",
+  "name": "auth_fe_signup",
+  "type": "ui-elements",
+  "source": {
+    "https": "https://github.com/frederic-neo/admin_dash.git",
+    "ssh": "git@github.com:frederic-neo/admin_dash.git",
+    "branch": "block_auth_fe_signup"
+  },
+  "parentBlockIDs": [
+    "sFwOS1scU3FbesfqurFKa",
+    "0uS29NyaNJuHJOb_Dbrus"
+  ],
+  "repoType": "mono",
+  "language": "js",
+  "supportedAppblockVersions": [
+    "1.0.0"
+  ],
+  "isPublic": false,
+  "start": "npx webpack-dev-server",
+  "build": "npx webpack"
+}

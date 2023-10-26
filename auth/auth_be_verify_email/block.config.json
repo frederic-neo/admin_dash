@@ -1,0 +1,24 @@
+{
+  "blockId": "LPvaFVqeiqM0M4d1aiXXd",
+  "name": "auth_be_verify_email",
+  "type": "function",
+  "source": {
+    "https": "https://github.com/frederic-neo/admin_dash.git",
+    "ssh": "git@github.com:frederic-neo/admin_dash.git",
+    "branch": "block_auth_be_verify_email"
+  },
+  "parentBlockIDs": [
+    "sFwOS1scU3FbesfqurFKa",
+    "0uS29NyaNJuHJOb_Dbrus"
+  ],
+  "repoType": "mono",
+  "language": "nodejs",
+  "supportedAppblockVersions": [
+    "1.0.0"
+  ],
+  "isPublic": false,
+  "start": "node index.js",
+  "version": "0.0.1",
+  "versionId": "i0NyQzufofuXFyzDvpDFP",
+  "variantOf": "i0NyQzufofuXFyzDvpDFP"
+}

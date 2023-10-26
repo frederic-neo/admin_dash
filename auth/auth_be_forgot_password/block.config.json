@@ -1,0 +1,24 @@
+{
+  "blockId": "orHvS3tYiJbSsnuiCrfsP",
+  "name": "auth_be_forgot_password",
+  "type": "function",
+  "source": {
+    "https": "https://github.com/frederic-neo/admin_dash.git",
+    "ssh": "git@github.com:frederic-neo/admin_dash.git",
+    "branch": "block_auth_be_forgot_password"
+  },
+  "parentBlockIDs": [
+    "sFwOS1scU3FbesfqurFKa",
+    "0uS29NyaNJuHJOb_Dbrus"
+  ],
+  "repoType": "mono",
+  "language": "nodejs",
+  "supportedAppblockVersions": [
+    "1.0.0"
+  ],
+  "isPublic": false,
+  "start": "node index.js",
+  "version": "0.0.1",
+  "versionId": "NOQbRTppUVImdzu4wGYZF",
+  "variantOf": "NOQbRTppUVImdzu4wGYZF"
+}

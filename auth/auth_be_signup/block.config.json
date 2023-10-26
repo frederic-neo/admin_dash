@@ -1,0 +1,21 @@
+{
+  "blockId": "ctRbr4C8ffKyyZe-G6gdN",
+  "name": "auth_be_signup",
+  "type": "function",
+  "source": {
+    "https": "https://github.com/frederic-neo/admin_dash.git",
+    "ssh": "git@github.com:frederic-neo/admin_dash.git",
+    "branch": "block_auth_be_signup"
+  },
+  "parentBlockIDs": [
+    "sFwOS1scU3FbesfqurFKa",
+    "0uS29NyaNJuHJOb_Dbrus"
+  ],
+  "repoType": "mono",
+  "language": "nodejs",
+  "supportedAppblockVersions": [
+    "1.0.0"
+  ],
+  "isPublic": false,
+  "start": "node index.js"
+}

@@ -20,14 +20,25 @@ const admin_be_userSignupsList = async ({ req, res }) => {
     // }
 
     const requestBody = await getBody(req)
-    const { start_date, end_date, name_filter, email_verified } = requestBody
+    const {
+      start_date,
+      end_date,
+      name_filter,
+      email_verified,
+      order_by = 'created_at',
+      order = 'desc',
+      page = 1,
+      page_limit = 10,
+    } = requestBody
+
+    const skip = (page - 1) * page_limit
 
     const filters = {
       AND: [
-        {
+        (start_date || end_date) && {
           created_at: {
-            gte: new Date(start_date),
-            lte: new Date(end_date),
+            ...(start_date && { gte: new Date(start_date) }),
+            ...(end_date && { lte: new Date(end_date) }),
           },
         },
         name_filter && {
@@ -52,12 +63,18 @@ const admin_be_userSignupsList = async ({ req, res }) => {
     const records = await prisma.users.findMany({
       where: filters,
       select: selectedFields,
+      orderBy: { [order_by]: order },
+      skip,
+      take: page_limit,
     })
+    const totalCount = await prisma.users.count({ where: filters })
 
     console.log('records', records)
 
     sendResponse(res, 200, {
       data: records,
+      total_count: totalCount,
+      page,
       message: httpStatusCodes[200],
     })
   } catch (e) {

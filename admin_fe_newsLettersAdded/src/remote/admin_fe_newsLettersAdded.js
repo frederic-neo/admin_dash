@@ -1,5 +1,5 @@
 import React from 'react'
-import OwnBlocks from './OwnBlocks'
+import NewsLetters from './NewsLetters'
 
 export const Admin_fe_newslettersadded = () => {
   return (
@@ -7,7 +7,7 @@ export const Admin_fe_newslettersadded = () => {
       <h4 className="text-xl font-semibold">Newsletters Added</h4>
 
       <div className="float-left w-full overflow-x-hidden py-6">
-        <OwnBlocks />
+        <NewsLetters />
       </div>
     </div>
   )

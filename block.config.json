@@ -43,6 +43,21 @@
     },
     "admin_fe_layout": {
       "directory": "admin_fe_layout"
+    },
+    "auth": {
+      "directory": "auth"
+    },
+    "admin_fe_signups": {
+      "directory": "admin_fe_signups"
+    },
+    "admin_fe_spaces_created": {
+      "directory": "admin_fe_spaces_created"
+    },
+    "admin_fe_blocks_created": {
+      "directory": "admin_fe_blocks_created"
+    },
+    "admin_fe_blocks_pushed": {
+      "directory": "admin_fe_blocks_pushed"
     }
   }
 }

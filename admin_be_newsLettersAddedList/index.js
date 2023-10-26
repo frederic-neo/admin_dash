@@ -5,7 +5,7 @@ const admin_be_newsLettersAddedList = async ({ req, res }) => {
     await shared.getShared()
 
   try {
-    validateRequestMethod(req, ['GET'])
+    validateRequestMethod(req, ['POST'])
     // health check
     if (checkHealth(req, res)) return
 
@@ -20,43 +20,41 @@ const admin_be_newsLettersAddedList = async ({ req, res }) => {
     // }
 
     const requestBody = await getBody(req)
-    const { start_date, end_date, name_filter, status, order_by = 'created_at', order = 'desc' } = requestBody
+    const {
+      start_date,
+      end_date,
+      name_filter,
+      status,
+      order_by = 'created_at',
+      order = 'desc',
+      page = 1,
+      page_limit = 10,
+    } = requestBody
 
-    // const newsLettersAddedQuery = `select * from getDailyNewsLettersAdded('${start_date}', '${end_date}','${name_filter}')`
-    // const newsLettersAdded = await prisma.$queryRawUnsafe(newsLettersAddedQuery)
-    // const replacer = (key, value) => (typeof value === 'bigint' ? value.toString() : value)
-    // const newsLettersAddedFormatted = JSON.stringify(newsLettersAdded, replacer)
+    const skip = (page - 1) * page_limit
 
-    const records = await prisma.leads.findMany({
+    const query = () => ({
       where: {
         AND: [
-          {
+          (start_date || end_date) && {
             created_at: {
-              gte: new Date(start_date),
-              lte: new Date(end_date),
+              ...(start_date && { gte: new Date(start_date) }),
+              ...(end_date && { lte: new Date(end_date) }),
             },
           },
-          name_filter
-            ? {
-                email: {
-                  contains: name_filter,
-                },
-              }
-            : {},
-          status && {
-            status,
-          },
+          name_filter && { email: { contains: name_filter } },
+          status && { status },
         ],
       },
-      orderBy: {
-        [order_by]: order,
-      },
+      orderBy: { [order_by]: order },
     })
-
-    console.log('records', records)
+    const records = await prisma.leads.findMany({ ...query(), skip, take: page_limit })
+    const totalCount = await prisma.leads.count(query())
 
     sendResponse(res, 200, {
       data: records,
+      total_count: totalCount,
+      page,
       message: httpStatusCodes[200],
     })
   } catch (e) {
@@ -69,3 +67,8 @@ const admin_be_newsLettersAddedList = async ({ req, res }) => {
 }
 
 export default admin_be_newsLettersAddedList
+
+// const newsLettersAddedQuery = `select * from getDailyNewsLettersAdded('${start_date}', '${end_date}','${name_filter}')`
+// const newsLettersAdded = await prisma.$queryRawUnsafe(newsLettersAddedQuery)
+// const replacer = (key, value) => (typeof value === 'bigint' ? value.toString() : value)
+// const newsLettersAddedFormatted = JSON.stringify(newsLettersAdded, replacer)

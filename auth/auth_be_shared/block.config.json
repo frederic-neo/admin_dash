@@ -1,0 +1,24 @@
+{
+  "blockId": "o8DB1kN5Z2CDrTZHIOedh",
+  "name": "auth_be_shared",
+  "type": "shared-fn",
+  "source": {
+    "https": "https://github.com/frederic-neo/admin_dash.git",
+    "ssh": "git@github.com:frederic-neo/admin_dash.git",
+    "branch": "block_auth_be_shared"
+  },
+  "parentBlockIDs": [
+    "sFwOS1scU3FbesfqurFKa",
+    "0uS29NyaNJuHJOb_Dbrus"
+  ],
+  "repoType": "mono",
+  "language": "nodejs",
+  "supportedAppblockVersions": [
+    "1.0.0"
+  ],
+  "isPublic": false,
+  "start": "node index.js",
+  "version": "0.0.1",
+  "versionId": "T7SlXsTHPie0a7wj9iF9o",
+  "variantOf": "T7SlXsTHPie0a7wj9iF9o"
+}

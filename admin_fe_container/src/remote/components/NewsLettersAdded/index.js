@@ -1,7 +1,7 @@
 import React from 'react'
 import { useFederatedComponent } from '@appblocks/js-sdk'
 
-const ManageBlocks = (props) => {
+const NewsLettersAdded = (props) => {
   const system = {
     module: './admin_fe_newsLettersAdded',
     scope: 'remotes',
@@ -21,4 +21,4 @@ const ManageBlocks = (props) => {
   )
 }
 
-export default ManageBlocks
+export default NewsLettersAdded
