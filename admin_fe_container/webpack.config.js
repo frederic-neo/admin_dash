@@ -117,6 +117,13 @@ export default {
           singleton: true,
           version: '^3.39.2',
         },
+        'react-paginate': {
+          import: 'react-paginate',
+          shareKey: 'react-paginate',
+          shareScope: 'default',
+          singleton: true,
+          version: '8.2.0',
+        },
         'state-pool': {
           requiredVersion: '^0.8.1',
           singleton: true, // only a single version of the shared module is allowed

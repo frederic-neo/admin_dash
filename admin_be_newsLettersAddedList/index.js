@@ -9,8 +9,6 @@ const admin_be_newsLettersAddedList = async ({ req, res }) => {
     // health check
     if (checkHealth(req, res)) return
 
-    console.log(req.test)
-
     // checks authenticated user
     // const authenticatedUser = await authenticateUser(req)
     // if (authenticatedUser.status === 401) {
@@ -33,18 +31,26 @@ const admin_be_newsLettersAddedList = async ({ req, res }) => {
 
     const skip = (page - 1) * page_limit
 
+    const filters = [
+      (start_date || end_date) && {
+        created_at: {
+          ...(start_date && { gte: new Date(start_date) }),
+          ...(end_date && { lte: new Date(end_date) }),
+        },
+      },
+    ]
+
+    if (status) {
+      filters.push({ status })
+    }
+
+    if (name_filter) {
+      filters.push({ email: { contains: name_filter } })
+    }
+
     const query = () => ({
       where: {
-        AND: [
-          (start_date || end_date) && {
-            created_at: {
-              ...(start_date && { gte: new Date(start_date) }),
-              ...(end_date && { lte: new Date(end_date) }),
-            },
-          },
-          name_filter && { email: { contains: name_filter } },
-          status && { status },
-        ],
+        AND: filters,
       },
       orderBy: { [order_by]: order },
     })

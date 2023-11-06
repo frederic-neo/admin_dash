@@ -1,8 +1,8 @@
 {
-  "name": "admin_fe_spaces_created",
+  "name": "admin_fe_spaceCreatedList",
   "main": "index.js",
   "type": "module",
-  "license": "ISC", 
+  "license": "ISC",
   "scripts": {
     "start": "webpack-dev-server",
     "build": "webpack --mode production",
@@ -25,14 +25,15 @@
     "@appblocks/js-sdk": "^0.0.14",
     "react-router-dom": "^6.9.0",
     "react-query": "^3.39.2",
+    "react-paginate": "8.2.0",
+    "lodash": "^4.17.21",
     "redux": "^4.1.2",
     "state-pool": "^0.8.1"
   },
   "devDependencies": {
-    "@types/eslint":"7.28.1",
-    "@types/jest":"27.4.0",
-    "jest":"27.4.3",
-    "eslint":"8.13.0", 
+    "@types/eslint": "7.28.1",
+    "@types/jest": "27.4.0",
+    "eslint": "8.13.0",
     "eslint-config-airbnb-base": "15.0.0",
     "eslint-config-prettier": "8.3.0",
     "eslint-plugin-import": "2.25.2",
@@ -41,8 +42,8 @@
     "husky": "^7.0.4",
     "jest": "^28.1.0",
     "jest-environment-jsdom": "^28.1.0",
-    "lint-staged":"11.2.3",
-    "prettier":"2.4.1",
+    "lint-staged": "11.2.3",
+    "prettier": "2.4.1",
     "@commitlint/cli": "15.0.0",
     "@commitlint/config-conventional": "15.0.0",
     "@babel/core": "7.15.0",
@@ -59,6 +60,6 @@
     "webpack": "5.88.2",
     "webpack-cli": "5.1.4",
     "webpack-dev-server": "4.15.1",
-    "@appblocks/node-sdk": "0.0.7"
+    "@appblocks/node-sdk": "0.0.6"
   }
 }

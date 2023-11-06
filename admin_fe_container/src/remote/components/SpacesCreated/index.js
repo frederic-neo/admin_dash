@@ -3,7 +3,7 @@ import { useFederatedComponent } from '@appblocks/js-sdk'
 
 const SpacesCreated = (props) => {
   const system = {
-    module: './admin_fe_spaces_created',
+    module: './admin_fe_spacesCreatedList',
     scope: 'remotes',
     url: process.env.BB_ADMIN_DASH_ELEMENTS_URL,
   }

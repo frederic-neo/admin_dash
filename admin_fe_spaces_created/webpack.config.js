@@ -2,7 +2,7 @@
 import HtmlWebpackPlugin from 'html-webpack-plugin'
 import path from 'path'
 import webpack from 'webpack'
-import exposed from './federation-expose'
+import exposed from './federation-expose.js'
 import sharedJson from './federation-shared.js'
 
 const ModuleFederationPlugin = webpack.container.ModuleFederationPlugin
@@ -63,7 +63,7 @@ export default {
       'process.env': JSON.stringify(process.env),
     }), 
     new ModuleFederationPlugin({
-      name: 'admin_fe_spaces_created',
+      name: 'admin_fe_spaceCreatedList',
       filename: 'remoteEntry.js',
       exposes: exposed,
       shared: sharedJson,

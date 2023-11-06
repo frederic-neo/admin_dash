@@ -1,11 +1,11 @@
 
 import React from 'react'
-import Admin_fe_spaces_created from './remote/admin_fe_spaces_created'
+import Admin_fe_spacecreatedlist from './remote/admin_fe_spaceCreatedList'
 
 export default function App() {
   return (
     <div className="App" data-testid="app">
-    <Admin_fe_spaces_created/>
+    <Admin_fe_spacecreatedlist/>
     </div>
   )
 }

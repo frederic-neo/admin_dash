@@ -5,6 +5,8 @@ bb_*
 .deploy
 .deployed.config.json
 headless-config.json
+.emulate
+._bb_
 
 # Logs
 logs

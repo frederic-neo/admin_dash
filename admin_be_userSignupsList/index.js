@@ -9,8 +9,6 @@ const admin_be_userSignupsList = async ({ req, res }) => {
     // health check
     if (checkHealth(req, res)) return
 
-    console.log(req.test)
-
     // checks authenticated user
     // const authenticatedUser = await authenticateUser(req)
     // if (authenticatedUser.status === 401) {

@@ -1,3 +1,3 @@
 export default {
-    "./admin_fe_spaces_created": "./src/remote/admin_fe_spaces_created",
+    "./admin_fe_spacesCreatedList": "./src/remote/admin_fe_spacesCreatedList",
 }
